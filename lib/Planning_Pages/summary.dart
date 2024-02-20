@@ -2444,19 +2444,19 @@ class _ViewSummaryState extends State<ViewSummary> {
       ),
     );
 
-    final List<int> pdfData = await pdf.save();
-    const String pdfPath = 'SafetyReport.pdf';
+    pdfData = await pdf.save();
+    pdfPath = 'SafetyReport.pdf';
 
     // Save the PDF file to device storage
     if (kIsWeb) {
       html.AnchorElement(
           href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath)
+        ..setAttribute("download", pdfPath!)
         ..click();
     } else {
       const Text('Sorry it is not ready for mobile platform');
     }
-
+    uploadPdf(pdfData, pdfPath!);
     pr!.hide();
     // // For mobile platforms
     // final String dir = (await getApplicationDocumentsDirectory()).path;
@@ -2877,8 +2877,8 @@ class _ViewSummaryState extends State<ViewSummary> {
                               savePdfAndSendEmail(
                                   pdfData,
                                   pdfPath!,
-                                  'Daily Project Details of $depoName',
-                                  'Todays+Daily+Report',
+                                  '',
+                                  '',
                                   checkboxProvider.toValue,
                                   checkboxProvider.ccValue);
                             })
@@ -2887,23 +2887,33 @@ class _ViewSummaryState extends State<ViewSummary> {
                                   savePdfAndSendEmail(
                                       pdfData,
                                       pdfPath!,
-                                      'Daily Project Details of $depoName',
-                                      'Todays+Daily+Report',
+                                      '',
+                                      '',
                                       checkboxProvider.toValue,
                                       checkboxProvider.ccValue);
                                 })
-                              : _generateEnergyPDF().whenComplete(() {
-                                  savePdfAndSendEmail(
-                                      pdfData,
-                                      pdfPath!,
-                                      'Daily Project Details of $depoName',
-                                      'Todays+Daily+Report',
-                                      checkboxProvider.toValue,
-                                      checkboxProvider.ccValue);
-                                });
+                              : widget.id == 'Energy Management'
+                                  ? _generateEnergyPDF().whenComplete(() {
+                                      savePdfAndSendEmail(
+                                          pdfData,
+                                          pdfPath!,
+                                          '',
+                                          '',
+                                          checkboxProvider.toValue,
+                                          checkboxProvider.ccValue);
+                                    })
+                                  : _generateSafetyPDF().whenComplete(() {
+                                      savePdfAndSendEmail(
+                                          pdfData,
+                                          pdfPath!,
+                                          '',
+                                          '',
+                                          checkboxProvider.toValue,
+                                          checkboxProvider.ccValue); //
+                                    });
 
                       // sendEmail(
-                      //     'Daily Project Details of $depoName'
+                      //     ''
                       //         .split('+')
                       //         .join(' '),
                       //     'hiii amirr how are you'.split('+').join(' '),
