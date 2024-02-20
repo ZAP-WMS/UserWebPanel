@@ -1,0 +1,30 @@
+{
+    "previous": "Some url for previous page",
+    "next": "Some url for next page",
+    "result":[
+        {
+            "Activity_name":"Letter Of Award Received From TML.",
+            "Duration":"16",
+            "Start_Date":"1-Dec-2022",
+            "End_Date":"17-Dec-2022",
+            "Actual_Start":"2-Dec-2022",
+            "Actual_End":"20-Dec-2022",
+            "Actual Duration":"18",
+            "Delay":"2",
+            "Perc_Progress":"1.25",
+            "Perc_Weightage":"2.5%"
+        },
+        {
+            "Activity_name":"Detailed Engineering For Approval Of Civil & Electrical Layout, GA Drawing From TML.",
+            "Duration":"16",
+            "Start_Date":"1-Dec-2022",
+            "End_Date":"17-Dec-2022",
+            "Actual_Start":"2-Dec-2022",
+            "Actual_End":"20-Dec-2022",
+            "Actual Duration":"18",
+            "Delay":"2",
+            "Perc_Progress":"1.25",
+            "Perc_Weightage":"2.5%"
+        }
+    ]
+}
