@@ -1,5 +1,6 @@
 import 'package:assingment/overview/key_events2.dart';
 import 'package:assingment/overview/material_vendor.dart';
+import 'package:assingment/provider/checkbox_provider.dart';
 import 'package:assingment/screen/overview_page.dart';
 import 'package:assingment/widget/style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,6 +47,8 @@ class CustomAppBar extends StatefulWidget {
   dynamic totalValue;
   String? depotName;
   bool isCitiesPage;
+  final bool haveSend;
+  final void Function()? sendEmail;
 
   // final IconData? icon;
   final bool haveSynced;
@@ -92,7 +95,9 @@ class CustomAppBar extends StatefulWidget {
       this.progress,
       this.depotName,
       this.isCitiesPage = false,
-      this.isDepoPage = false});
+      this.isDepoPage = false,
+      this.sendEmail,
+      this.haveSend = false});
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -486,6 +491,24 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     )
                   : Container(),
               const SizedBox(width: 10),
+              widget.haveSend
+                  ? Consumer<CheckboxProvider>(
+                      builder: (context, value, child) {
+                        // print(value.myBooleanValue);
+                        return TextButton(
+                            onPressed: widget.sendEmail,
+                            // () {
+
+                            // _showCheckboxDialog(context, _checkboxProvider!,
+                            //     widget.depotName!);
+                            // },
+                            child: Text(
+                              'Send Email',
+                              style: TextStyle(color: white),
+                            ));
+                      },
+                    )
+                  : Container(),
               Container(
                   margin: const EdgeInsets.all(10.0),
                   child: GestureDetector(
