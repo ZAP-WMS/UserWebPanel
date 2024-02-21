@@ -28,6 +28,7 @@ class _JmrState extends State<Jmr> {
 
   @override
   void initState() {
+    print('This is jmr worlds');
     getUserId().whenComplete(() => {
           getJmrLen(5),
         });

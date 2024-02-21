@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:assingment/overview/daily_project.dart';
 import 'package:assingment/widget/style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,17 +13,16 @@ class CustomAppBarBackDate extends StatefulWidget {
   String? cityName;
   String? depoName;
   // final IconData? icon;
-
   final bool haveSynced;
   final bool haveSummary;
   final void Function()? store;
   VoidCallback? onTap;
-
   final void Function()? choosedate;
   bool havebottom;
   bool havedropdown;
   bool isdetailedTab;
   bool toDaily;
+
   TabBar? tabBar;
 
   CustomAppBarBackDate(
@@ -56,8 +53,6 @@ class _CustomAppBarState extends State<CustomAppBarBackDate> {
 
   @override
   void initState() {
-    // Start a timer that triggers after 5 minutes
-
     getUserId().whenComplete(() {
       setState(() {});
     });
@@ -151,9 +146,7 @@ class _CustomAppBarState extends State<CustomAppBarBackDate> {
                           borderRadius: BorderRadius.circular(2),
                           color: Colors.blue),
                       child: TextButton(
-                          onPressed: () {
-                            widget.onTap!();
-                          },
+                          onPressed: widget.onTap,
                           child: Text(
                             'View Summary',
                             style: TextStyle(color: white, fontSize: 16),

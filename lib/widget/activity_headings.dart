@@ -340,18 +340,18 @@ List civil_fc_activity_data = [
 
 // FLOORING & TILING ACTIVITY DATA
 List civil_ft_activity_data = [
-  "as the Materials to be used in Flooring Tested and Approved with MTC?",
-  "pproved type,color & shade of tiles to be checked as per spec / approved palette.",
+  "Was the Materials to be used in Flooring Tested and Approved with MTC?",
+  "Approved type,color & shade of tiles to be checked as per spec / approved palette.",
   "routing Material or Cement verified w.r.t. specifications",
-  "pproved jointing pattern reviewed & same followed.",
-  "nspection of substrate bed done & found as per drawing. ",
-  "pplication procedure reviewed & found as per drg. / spec.",
-  "ortar Mix proportion Checked as per specifications ",
-  "rout procedure, pointing, Polishing, Finishing found OK. Tile face plumb & right angles checked & found OK",
-  "racks, misalignment, hollowness in bedding - Y / N",
-  "rout joints observed uniform.",
-  "roper slope of floor checked with water flooding and ensured that there is no water stagnant",
-  "leanliness upon completion is checked",
+  "Approved jointing pattern reviewed & same followed.",
+  "Inspection of substrate bed done & found as per drawing. ",
+  "Application procedure reviewed & found as per drg. / spec.",
+  "Mortar Mix proportion Checked as per specifications ",
+  "Grout procedure, pointing, Polishing, Finishing found OK. Tile face plumb & right angles checked & found OK",
+  "Cracks, misalignment, hollowness in bedding - Y / N",
+  "Grout joints observed uniform.",
+  "Proper slope of floor checked with water flooding and ensured that there is no water stagnant",
+  "Cleanliness upon completion is checked",
 ];
 
 // GROUTING INSPECTION ACTIVITY DATA

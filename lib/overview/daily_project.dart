@@ -1,8 +1,9 @@
-import 'dart:html' as html;
 import 'package:assingment/FirebaseApi/firebase_api.dart';
+import 'package:assingment/Planning_Pages/civil_quality_checklist.dart';
 import 'package:assingment/datasource/dailyproject_datasource.dart';
 import 'package:assingment/widget/appbar_back_date.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +15,9 @@ import '../Planning_Pages/summary.dart';
 import '../components/loading_page.dart';
 import '../model/daily_projectModel.dart';
 import '../widget/style.dart';
+
+List<bool> isShowPinIcon = [];
+List<int> globalItemLengthList = [];
 
 String? selectedDate = DateFormat.yMMMMd().format(DateTime.now());
 
@@ -28,6 +32,7 @@ class DailyProject extends StatefulWidget {
 }
 
 class _DailyProjectState extends State<DailyProject> {
+  bool isImagesAvailable = false;
   List<DailyProjectModel> dailyproject = <DailyProjectModel>[];
   late DailyDataSource _dailyDataSource;
   late DataGridController _dataGridController;
@@ -41,12 +46,9 @@ class _DailyProjectState extends State<DailyProject> {
   @override
   void initState() {
     selectedDate = DateFormat.yMMMMd().format(DateTime.now());
-    // dailyproject = getmonthlyReport();
-    // _dailyDataSource = DailyDataSource(
-    //     dailyproject, context, widget.cityName!, widget.depoName!, userId);
-    // _dataGridController = DataGridController();
 
-    getUserId().whenComplete(() {
+    getUserId().whenComplete(() async {
+      await checkIsImageAvail();
       getmonthlyReport();
       // dailyproject = getmonthlyReport();
       _dailyDataSource = DailyDataSource(dailyproject, context,
@@ -64,13 +66,12 @@ class _DailyProjectState extends State<DailyProject> {
   Widget build(BuildContext context) {
     dailyproject.clear();
     _stream = FirebaseFirestore.instance
-        .collection('DailyProjectReport2')
+        .collection('DailyProject3')
         .doc('${widget.depoName}')
-        .collection('userId')
+        .collection(selectedDate.toString())
         .doc(userId)
-        .collection('date')
-        .doc(selectedDate)
         .snapshots();
+
     return Scaffold(
       appBar: PreferredSize(
         // ignore: sort_child_properties_last
@@ -80,7 +81,6 @@ class _DailyProjectState extends State<DailyProject> {
             text: 'Daily Report',
             depoName: widget.depoName,
             //  ${DateFormat.yMMMMd().format(DateTime.now())}',
-
             haveSynced: true,
             haveSummary: true,
             onTap: () => Navigator.push(
@@ -95,8 +95,8 @@ class _DailyProjectState extends State<DailyProject> {
                 )),
             store: () {
               _showDialog(context);
-              FirebaseApi().nestedKeyEventsField(
-                  'DailyProjectReport2', widget.depoName!, 'userId', userId);
+              // FirebaseApi().nestedKeyEventsField(
+              //     'DailyProject3', widget.depoName!, 'userId', userId);
               storeData();
             },
             choosedate: () {
@@ -127,7 +127,9 @@ class _DailyProjectState extends State<DailyProject> {
                       selectedDate!,
                       userId,
                     );
+
                     _dataGridController = DataGridController();
+
                     return SfDataGridTheme(
                       data: SfDataGridThemeData(
                           headerColor: white, gridLineColor: blue),
@@ -288,6 +290,18 @@ class _DailyProjectState extends State<DailyProject> {
                   } else {
                     alldata = '';
                     alldata = snapshot.data['data'] as List<dynamic>;
+                    int listLen = snapshot.data['data'].length;
+                    if (isImagesAvailable == false) {
+                      isShowPinIcon.clear();
+                      globalItemLengthList.clear();
+                      for (int i = 0; i < listLen; i++) {
+                        isShowPinIcon.add(false);
+                        globalItemLengthList.add(0);
+                      }
+                      print('isShow - $isShowPinIcon');
+                      print('globalList - $globalItemLengthList');
+                    }
+
                     dailyproject.clear();
                     _dailyDataSource.buildDataGridRows();
                     _dailyDataSource.updateDatagridSource();
@@ -305,6 +319,7 @@ class _DailyProjectState extends State<DailyProject> {
                       _dailyDataSource.buildDataGridRows();
                       _dailyDataSource.updateDatagridSource();
                     });
+
                     return SfDataGridTheme(
                       data: SfDataGridThemeData(
                           headerColor: white, gridLineColor: blue),
@@ -422,7 +437,7 @@ class _DailyProjectState extends State<DailyProject> {
                             GridColumn(
                               columnName: 'view',
                               allowEditing: false,
-                              width: 120,
+                              width: 110,
                               label: Container(
                                 alignment: Alignment.center,
                                 child: Text('view image',
@@ -466,6 +481,8 @@ class _DailyProjectState extends State<DailyProject> {
             ]),
       floatingActionButton: FloatingActionButton(
           onPressed: (() {
+            globalItemLengthList.add(0);
+            isShowPinIcon.add(false);
             dailyproject.add(DailyProjectModel(
                 siNo: 1,
                 // date: DateFormat().add_yMd(storeData()).format(DateTime.now()),
@@ -503,12 +520,10 @@ class _DailyProjectState extends State<DailyProject> {
     }
 
     FirebaseFirestore.instance
-        .collection('DailyProjectReport2')
+        .collection('DailyProject3')
         .doc('${widget.depoName}')
-        .collection('userId')
+        .collection(selectedDate.toString())
         .doc(userId)
-        .collection('date')
-        .doc(selectedDate.toString())
         // .doc(DateFormat.yMMMMd().format(DateTime.now()))
         .set({
       'data': tabledata2,
@@ -554,6 +569,7 @@ class _DailyProjectState extends State<DailyProject> {
   }
 
   void chooseDate(BuildContext context) {
+    isImagesAvailable = false;
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -586,5 +602,43 @@ class _DailyProjectState extends State<DailyProject> {
                     },
                   )),
             ));
+  }
+
+  Future<void> checkIsImageAvail() async {
+    isImagesAvailable = false;
+    isShowPinIcon.clear();
+    globalItemLengthList.clear();
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('DailyProject3')
+        .doc(widget.depoName)
+        .collection(selectedDate.toString())
+        .doc(userId)
+        .get();
+
+    if (documentSnapshot.exists) {
+      Map<String, dynamic> mapData =
+          documentSnapshot.data() as Map<String, dynamic>;
+      List<dynamic> data = mapData['data'];
+
+      final storage = FirebaseStorage.instance;
+
+      for (int i = 0; i < data.length; i++) {
+        ListResult listResult = await storage
+            .ref()
+            .child(
+                '/Daily Report/${widget.cityName}/${widget.depoName}/$userId/${selectedDate.toString()}/${i + 1}')
+            .listAll();
+
+        if (listResult.items.isNotEmpty) {
+          isImagesAvailable = true;
+          globalItemLengthList.add(listResult.items.length);
+          isShowPinIcon.add(true);
+        } else {
+          globalItemLengthList.add(0);
+          isShowPinIcon.add(false);
+        }
+      }
+      print('isShowPinIcon - $isShowPinIcon');
+    }
   }
 }

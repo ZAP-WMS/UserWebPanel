@@ -1,7 +1,6 @@
-import 'dart:html' as html;
-import 'dart:io';
 import 'package:assingment/overview/key_events2.dart';
 import 'package:assingment/overview/material_vendor.dart';
+import 'package:assingment/provider/checkbox_provider.dart';
 import 'package:assingment/screen/overview_page.dart';
 import 'package:assingment/widget/style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,7 +22,6 @@ import '../overview/detailed_Eng.dart';
 import '../overview/key_events.dart';
 import '../overview/monthly_project.dart';
 import '../overview/testing_report.dart';
-import '../provider/checkbox_provider.dart';
 import '../provider/key_provider.dart';
 
 class CustomAppBar extends StatefulWidget {
@@ -49,12 +47,12 @@ class CustomAppBar extends StatefulWidget {
   dynamic totalValue;
   String? depotName;
   bool isCitiesPage;
+  final bool haveSend;
+  final void Function()? sendEmail;
 
   // final IconData? icon;
   final bool haveSynced;
   final bool haveSummary;
-  final bool haveSend;
-  final void Function()? sendEmail;
   final void Function()? store;
   VoidCallback? onTap;
   bool havebottom;
@@ -68,10 +66,8 @@ class CustomAppBar extends StatefulWidget {
       {this.cityname,
       super.key,
       this.text,
-      this.haveSend = false,
       this.haveSynced = false,
       this.haveSummary = false,
-      this.sendEmail,
       this.store,
       this.onTap,
       this.havedropdown = false,
@@ -99,7 +95,9 @@ class CustomAppBar extends StatefulWidget {
       this.progress,
       this.depotName,
       this.isCitiesPage = false,
-      this.isDepoPage = false});
+      this.isDepoPage = false,
+      this.sendEmail,
+      this.haveSend = false});
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
@@ -107,7 +105,7 @@ class CustomAppBar extends StatefulWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   KeyProvider? _keyProvider;
-  CheckboxProvider? _checkboxProvider;
+  bool isLoading = true;
   dynamic userId;
   TextEditingController selectedDepoController = TextEditingController();
   String? rangeStartDate = DateFormat.yMMMMd().format(DateTime.now());
@@ -117,10 +115,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
   void initState() {
     Future.delayed(Duration.zero, () {
       _keyProvider = Provider.of<KeyProvider>(context, listen: false);
-      _checkboxProvider = Provider.of<CheckboxProvider>(context, listen: false);
-      _checkboxProvider!.fetchCcMaidId();
-      _checkboxProvider!.fetchToMaidId();
-
       getUserId().whenComplete(() {
         setState(() {});
       });
@@ -133,10 +127,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return widget.progress!.toInt();
   }
 
-  List<String> _items = ['Item 1', 'Item 2', 'Item 3'];
-  // List<bool> _checkedItems = [true, false, false];
-  // String _selectedItem = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +136,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             title: widget.isCitiesPage
                 ? const Text(
                     'Cities',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 18),
                   )
                 : widget.isDepoPage
                     ? Text(widget.cityname ?? "")
@@ -158,7 +148,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             style: appFontSize,
                           ),
                           Text(
-                            'City - ${widget.cityname}     Depot - ${widget.depotName}',
+                            'City - ${widget.cityname}     Depot - ${widget.depotName}' ??
+                                '',
                             style: const TextStyle(
                               fontSize: 11,
                             ),
@@ -455,128 +446,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       ],
                     )
                   : Container(),
-              widget.haveSend
-                  ? Consumer<CheckboxProvider>(
-                      builder: (context, value, child) {
-                        // print(value.myBooleanValue);
-                        return TextButton(
-                            onPressed: widget.sendEmail,
-                            // () {
-
-                            // _showCheckboxDialog(context, _checkboxProvider!,
-                            //     widget.depotName!);
-                            // },
-                            child: Text(
-                              'Send Email',
-                              style: TextStyle(color: white),
-                            ));
-                      },
-
-                      // showDialog(
-                      //     context: context,
-                      //     builder: (context) => AlertDialog(
-                      //         content: SizedBox(
-                      //             height: 100,
-                      //             child: Column(
-                      //               mainAxisAlignment:
-                      //                   MainAxisAlignment.spaceBetween,
-                      //               children: [
-                      //                 Text(
-                      //                     'Employee ID: ${row.getCells()[0].value.toString()}'),
-                      //                 Text(
-                      //                     'Employee Name: ${row.getCells()[1].value.toString()}'),
-                      //                 Text(
-                      //                     'Employee Designation: ${row.getCells()[2].value.toString()}'),
-                      //               ],
-                      //             ))));
-                      //  PopupMenuButton<int>(
-                      //   icon: const Text('Send Email'),
-                      //   itemBuilder: (BuildContext context) {
-                      //     return _items.asMap().entries.map((entry) {
-                      //       int index = entry.key;
-                      //       String item = entry.value;
-                      //       print('object${value.myBooleanValue[index]}');
-                      //       return PopupMenuItem<int>(
-                      //         value: index,
-                      //         child: Row(
-                      //           children: [
-                      //             Checkbox(
-                      //               value: value.myBooleanValue[index],
-                      //               checkColor:
-                      //                   white, // Change the color of the checkmark
-                      //               activeColor: Theme.of(context)
-                      //                   .colorScheme
-                      //                   .secondary,
-
-                      //               onChanged: (bool? newValue) {
-                      //                 _checkboxProvider!.setMyBooleanValue(
-                      //                     index, newValue!);
-                      //               },
-                      //             ),
-                      //             Text(item),
-                      //           ],
-                      //         ),
-                      //       );
-                      //     }).toList();
-                      //   },
-                      //   onSelected: (int index) {
-                      //     // Handle item selection
-                      //     print('Selected item: ${_items[index]}');
-                      //   },
-                      // ),
-                    )
-                  : Container(),
-              //    ],
-              //   ),
-              // Container(
-              //     margin: const EdgeInsets.all(8.0),
-              //     height: 500,
-              //     width: 500,
-              //     decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(2),
-              //         color: Colors.blue),
-              //     child: Column(
-              //       children: [
-              //         DropdownButton<String>(
-              //           value:
-              //               _selectedItem.isNotEmpty ? _selectedItem : null,
-              //           hint:const Text('Select an item'),
-              //           onChanged: (String? newValue) {
-              //             setState(() {
-              //               _selectedItem = newValue!;
-              //             });
-              //           },
-              //           items: _items
-              //               .map<DropdownMenuItem<String>>((String value) {
-              //             return DropdownMenuItem<String>(
-              //                 value: value,
-              //                 child: ListView.builder(
-              //                     shrinkWrap: true,
-              //                     itemCount: _items.length,
-              //                     itemBuilder:
-              //                         (BuildContext context, int index) {
-              //                       return CheckboxListTile(
-              //                         title: Text(_items[index]),
-              //                         value: _checked[index],
-              //                         onChanged: (bool? value) {
-              //                           setState(() {
-              //                             _checked[index] = value!;
-              //                           });
-              //                         },
-              //                       );
-              //                     }));
-              //           }).toList(),
-              //         ),
-              //       ],
-              //     )
-              //     //  TextButton(
-              //     //     onPressed: widget.sendEmail,
-              //     //     child: Text(
-              //     //       'Send Email',
-              //     //       style: TextStyle(color: white, fontSize: 15),
-              //     //     )),
-              //     )
-              //   : Container(),
               widget.haveSummary
                   ? Container(
                       margin: const EdgeInsets.all(8.0),
@@ -622,6 +491,24 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     )
                   : Container(),
               const SizedBox(width: 10),
+              widget.haveSend
+                  ? Consumer<CheckboxProvider>(
+                      builder: (context, value, child) {
+                        // print(value.myBooleanValue);
+                        return TextButton(
+                            onPressed: widget.sendEmail,
+                            // () {
+
+                            // _showCheckboxDialog(context, _checkboxProvider!,
+                            //     widget.depotName!);
+                            // },
+                            child: Text(
+                              'Send Email',
+                              style: TextStyle(color: white),
+                            ));
+                      },
+                    )
+                  : Container(),
               Container(
                   margin: const EdgeInsets.all(10.0),
                   child: GestureDetector(
@@ -801,199 +688,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     });
   }
 }
-
-// _showCheckboxDialog(
-//     BuildContext context, CheckboxProvider checkboxProvider, String depoName) {
-//   checkboxProvider.myCcBooleanValue.clear();
-//   checkboxProvider.myToBooleanValue.clear();
-//   checkboxProvider.myCcBooleanValue.add(false);
-//   checkboxProvider.myToBooleanValue.add(false);
-//   checkboxProvider.ccValue.clear();
-//   checkboxProvider.toValue.clear();
-
-//   // List<String>? currentToValue = [];
-//   // List<String>? currentCcValue = [];
-
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return Consumer<CheckboxProvider>(
-//         builder: (context, value, child) {
-//           return Container(
-//             padding: const EdgeInsetsDirectional.all(0),
-//             margin: const EdgeInsets.all(15),
-//             width: MediaQuery.of(context).size.width * 0.5,
-//             child: AlertDialog(
-//               title: const Text('Choose Required Filled For Email'),
-//               content: Row(mainAxisSize: MainAxisSize.max, children: [
-//                 Expanded(
-//                   child: Column(children: [
-//                     SizedBox(
-//                       width: MediaQuery.of(context).size.width,
-//                       child: Text(
-//                         'Choose To',
-//                         style: TextStyle(
-//                             fontWeight: FontWeight.bold,
-//                             color: black,
-//                             fontSize: 18),
-//                         textAlign: TextAlign.start,
-//                       ),
-//                     ),
-//                     ...List.generate(
-//                       value.myToMailValue.length,
-//                       (index) {
-//                         // print('iji$index');
-
-//                         for (int i = 0; i <= value.myToMailValue.length; i++) {
-//                           checkboxProvider.defaultToBooleanValue.add(false);
-//                         }
-
-//                         return Flexible(
-//                           child: Row(
-//                             children: [
-//                               Checkbox(
-//                                 // title: Text(value.myCcMailValue[index]),
-//                                 value: value.myToBooleanValue[index],
-//                                 onChanged: (bool? newboolean) {
-//                                   if (newboolean != null) {
-//                                     checkboxProvider.setMyToBooleanValue(
-//                                         index, newboolean);
-//                                   }
-
-//                                   if (value.myToBooleanValue[index] != null &&
-//                                       value.myToBooleanValue[index] == true) {
-//                                     print('index$index');
-//                                     checkboxProvider.getCurrentToValue(
-//                                         index, value.myToMailValue[index]);
-//                                   } else {
-//                                     value.toValue
-//                                         .remove(value.myToMailValue[index]);
-//                                   }
-//                                   print(value.ccValue);
-//                                 },
-//                               ),
-//                               Text(
-//                                 value.myToMailValue[index],
-//                               ),
-//                             ],
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   ]),
-//                 ),
-//                 Expanded(
-//                   child: Column(children: [
-//                     SizedBox(
-//                       width: MediaQuery.of(context).size.width,
-//                       child: Text(
-//                         'Choose Cc',
-//                         style: TextStyle(
-//                             fontWeight: FontWeight.bold,
-//                             color: black,
-//                             fontSize: 18),
-//                         textAlign: TextAlign.start,
-//                       ),
-//                     ),
-//                     ...List.generate(
-//                       value.myCcMailValue.length,
-//                       (index) {
-//                         // print('iji$index');
-//                         for (int i = 0; i <= value.myCcMailValue.length; i++) {
-//                           checkboxProvider.defaultCcBooleanValue.add(false);
-//                         }
-//                         return Flexible(
-//                           child: Row(
-//                             children: [
-//                               Checkbox(
-//                                 value: value.myCcBooleanValue[index],
-//                                 onChanged: (bool? newboolean) {
-//                                   if (newboolean != null) {
-//                                     checkboxProvider.setMyCcBooleanValue(
-//                                         index, newboolean);
-//                                   }
-//                                   if (value.myCcBooleanValue[index] != null &&
-//                                       value.myCcBooleanValue[index] == true) {
-//                                     print('index$index');
-//                                     checkboxProvider.getCurrentCcValue(
-//                                         index, value.myCcMailValue[index]);
-//                                   } else {
-//                                     value.ccValue
-//                                         .remove(value.myCcMailValue[index]);
-//                                   }
-//                                 },
-//                               ),
-//                               Text(value.myCcMailValue[index]),
-//                             ],
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   ]),
-//                 ),
-//               ]),
-//               actions: <Widget>[
-//                 TextButton(
-//                   onPressed: () {
-//                     Navigator.of(context).pop();
-//                   },
-//                   child: const Text('Close'),
-//                 ),
-//                 TextButton(
-//                   onPressed: () {
-//                     // Do something with the checked items
-//                     print(checkboxProvider.ccValue);
-
-//                     // sendEmail(
-//                     //     'Daily Project Details of $depoName'
-//                     //         .split('+')
-//                     //         .join(' '),
-//                     //     'hiii amirr how are you'.split('+').join(' '),
-//                     //     'https://firebasestorage.googleapis.com/v0/b/tp-zap-solz.appspot.com/o/Downloaded%20File%2FDaily%20Report.pdf?alt=media&token=8c8918b5-d0f7-4fc0-8681-21d812634f1a',
-//                     //     checkboxProvider.toValue,
-//                     //     checkboxProvider.ccValue);
-
-//                     Navigator.of(context).pop();
-//                   },
-//                   child: const Text('Send'),
-//                 ),
-//               ],
-//             ),
-//           );
-//         },
-//       );
-//     },
-//   );
-// }
-
-// sendEmail(String subject, String body, String attachmentUrl,
-//     List<String> toRecipients, List<String> ccRecipients) {
-//   // Construct the mailto URL
-
-//   String encodedSubject = Uri.decodeComponent(subject);
-//   String encodedBody = Uri.encodeComponent(body);
-//   // String encodedAttachmentUrl = attachmentUrl;
-//   String toParameter = toRecipients.map((cc) => cc).join(',');
-//   String ccParameter = ccRecipients.map((cc) => cc).join(',');
-
-//   final Uri params = Uri(
-//     scheme: 'mailto',
-//     path: '', // email address goes here
-//     queryParameters: {
-//       'subject': encodedSubject,
-//       'body': body += '\n\nAttachment: $attachmentUrl',
-//       // 'attachment': attachmentUrl,
-//       //encodedAttachmentUrl, // attachment url if needed
-
-//       'to': toParameter,
-//       'cc': ccParameter,
-//     },
-//   );
-//   print('gfgfh&$ccParameter');
-
-//   // Encode and launch the mailto URL
-//   html.window.open(params.toString(), 'email');
-// }
 
 legends(Color color, String title, Color textColor) {
   return Padding(

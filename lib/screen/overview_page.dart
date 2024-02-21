@@ -146,7 +146,7 @@ class _OverviewPageState extends State<OverviewPage> {
           depoName: widget.depoName,
           userId: userId,
           pagetitle: 'Overview Page',
-          fldrName: 'OverviewepoImages'),
+          fldrName: userId),
       // TestingReport(
       //   cityName: widget.cityName,
       //   depoName: widget.depoName,
@@ -181,8 +181,7 @@ class _OverviewPageState extends State<OverviewPage> {
           ? LoadingPage()
           : GridView.count(
               crossAxisCount: 4,
-              // mainAxisSpacing: 10,
-              childAspectRatio: 1.5,
+              childAspectRatio: 1.8,
               children: List.generate(desription.length, (index) {
                 return cards(desription[index], imagedata[index], index);
               }),
@@ -193,39 +192,32 @@ class _OverviewPageState extends State<OverviewPage> {
   Widget cards(String desc, String img, int index) {
     return GestureDetector(
       onTap: (() {
-        Navigator.push(
-            context,
-            // MaterialPageRoute(
-            //   builder: (context) => pages[index],
-            // )
-            CustomPageRoute(page: pages[index]));
+        Navigator.push(context, CustomPageRoute(page: pages[index]));
       }),
       child: Center(
         child: Container(
+          margin: EdgeInsets.only(top: 10.0),
           width: MediaQuery.of(context).size.width / 5,
           height: MediaQuery.of(context).size.height / 4,
           child: Card(
-            elevation: 25,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 60,
-                    width: 60,
-                    child: Image.asset(img, fit: BoxFit.cover),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    desc,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  )
-                ],
-              ),
+            elevation: 10,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 60,
+                  width: 60,
+                  child: Image.asset(img, fit: BoxFit.cover),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  desc,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                )
+              ],
             ),
           ),
         ),

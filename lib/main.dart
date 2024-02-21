@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AllDepoSelectProvider()),
         ChangeNotifierProvider(create: (context) => DemandEnergyProvider()),
         ChangeNotifierProvider(create: (context) => HoverProvider()),
-        ChangeNotifierProvider(create: (context) => CheckboxProvider())
+        ChangeNotifierProvider(create: (context) => CheckboxProvider()),
       ],
       child: MaterialApp(
         // initialRoute: '/splash',
@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           scrollbarTheme: ScrollbarThemeData(
               interactive: true,
-              thickness: const MaterialStatePropertyAll(5.0),
+              thickness: const MaterialStatePropertyAll(7.0),
               thumbColor: MaterialStatePropertyAll(blue)),
           scaffoldBackgroundColor: Colors.white,
           dividerColor: const Color.fromARGB(255, 2, 42, 75),

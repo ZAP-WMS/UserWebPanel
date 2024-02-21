@@ -52,6 +52,7 @@ dynamic userId;
 TextEditingController selectedDepoController = TextEditingController();
 
 List<bool> listToSelectTab = [];
+
 List<String> qualityFields = [
   'CivilChecklistField',
   'ElectricalChecklistField'
