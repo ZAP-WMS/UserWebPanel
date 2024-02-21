@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:assingment/Planning_Pages/quality_checklist.dart';
 import 'package:assingment/datasource/energymanagement_datasource.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:assingment/model/energy_management.dart';
 import 'package:assingment/overview/daily_project.dart';
+import 'package:assingment/provider/checkbox_provider.dart';
 import 'package:assingment/widget/custom_appbar.dart';
 import 'package:assingment/widget/loading_pdf.dart';
 import 'package:assingment/widget/style.dart';
@@ -81,9 +83,16 @@ class _ViewSummaryState extends State<ViewSummary> {
   bool _isLoading = false;
   dynamic userId;
   ProgressDialog? pr;
+  String url = '';
+  CheckboxProvider? _checkboxProvider;
+  List<int> pdfData = [];
+  String? pdfPath;
 
   @override
   void initState() {
+    _checkboxProvider = Provider.of<CheckboxProvider>(context, listen: false);
+    _checkboxProvider!.fetchCcMaidId();
+    _checkboxProvider!.fetchToMaidId();
     pr = ProgressDialog(context,
         customBody:
             Container(height: 200, width: 100, child: const LoadingPdf()));
@@ -125,6 +134,11 @@ class _ViewSummaryState extends State<ViewSummary> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(50),
           child: CustomAppBar(
+              sendEmail: () {
+                _showCheckboxDialog(
+                    context, _checkboxProvider!, widget.depoName!);
+              },
+              haveSend: true,
               depotName: widget.depoName,
               cityname: widget.cityName,
               donwloadFunction: widget.id == 'Daily Report'
@@ -1755,19 +1769,19 @@ class _ViewSummaryState extends State<ViewSummary> {
       ),
     );
 
-    final List<int> pdfData = await pdf.save();
-    const String pdfPath = 'DemandEnergyReport.pdf';
+    pdfData = await pdf.save();
+    pdfPath = 'DemandEnergyReport.pdf';
 
     // Save the PDF file to device storage
     if (kIsWeb) {
       html.AnchorElement(
           href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath)
+        ..setAttribute("download", pdfPath!)
         ..click();
     } else {
       const Text('Sorry it is not ready for mobile platform');
     }
-
+    uploadPdf(pdfData, pdfPath!);
     pr!.hide();
     // // For mobile platforms
     // final String dir = (await getApplicationDocumentsDirectory()).path;
@@ -2101,17 +2115,17 @@ class _ViewSummaryState extends State<ViewSummary> {
       ),
     );
 
-    final List<int> pdfData = await pdf.save();
-    const String pdfPath = 'Daily Report.pdf';
+    pdfData = await pdf.save();
+    pdfPath = 'Daily Report.pdf';
 
     // Save the PDF file to device storage
     if (kIsWeb) {
       html.AnchorElement(
           href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath)
+        ..setAttribute("download", pdfPath!)
         ..click();
     }
-
+    uploadPdf(pdfData, pdfPath!);
     pr!.hide();
 
     // setState(() {
@@ -2637,19 +2651,19 @@ class _ViewSummaryState extends State<ViewSummary> {
       ),
     );
 
-    final List<int> pdfData = await pdf.save();
-    const String pdfPath = 'MonthlyReport.pdf';
+    pdfData = await pdf.save();
+    pdfPath = 'MonthlyReport.pdf';
 
     // Save the PDF file to device storage
     if (kIsWeb) {
       html.AnchorElement(
           href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath)
+        ..setAttribute("download", pdfPath!)
         ..click();
     } else {
       const Text('Sorry it is not ready for mobile platform');
     }
-
+    uploadPdf(pdfData, pdfPath!);
     pr!.hide();
     // // For mobile platforms
     // final String dir = (await getApplicationDocumentsDirectory()).path;
@@ -2890,5 +2904,60 @@ class _ViewSummaryState extends State<ViewSummary> {
         );
       },
     );
+  }
+
+  Future<String> uploadPdf(List<int> pdfData, String pdfPath) async {
+    // Upload the PDF data to Firebase Storage
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+        .ref('Downloaded File')
+        // .child(path)
+        .child(pdfPath);
+    await ref.putData(Uint8List.fromList(pdfData));
+
+    // Get the download URL for the uploaded PDF file
+    return await ref.getDownloadURL();
+  }
+
+  Future<void> savePdfAndSendEmail(
+      List<int> pdfData,
+      String pdfPath,
+      String subject,
+      String body,
+      List<String> toRecipients,
+      List<String> ccRecipients) async {
+    // Upload the PDF data to Firebase Storage
+    String pdfUrl = await uploadPdf(pdfData, pdfPath);
+
+    // Send email with the PDF URL as an attachment
+
+    sendEmail('subject', body, pdfUrl, toRecipients, ccRecipients);
+  }
+
+  sendEmail(String subject, String body, String attachmentUrl,
+      List<String> toRecipients, List<String> ccRecipients) {
+    // Construct the mailto URL
+
+    String encodedSubject = Uri.decodeComponent(subject);
+    String encodedBody = Uri.decodeComponent(body);
+    // String encodedAttachmentUrl = attachmentUrl;
+    String toParameter = toRecipients.map((cc) => cc).join(',');
+    String ccParameter = ccRecipients.map((cc) => cc).join(',');
+
+    final Uri params = Uri(
+      scheme: 'mailto',
+      path: '', // email address goes here
+      queryParameters: {
+        'subject': encodedSubject,
+        'body': 'Attachment: $attachmentUrl',
+        // 'attachment': attachmentUrl,
+        //encodedAttachmentUrl, // attachment url if needed
+        'to': toParameter,
+        'cc': ccParameter,
+      },
+    );
+    print('gfgfh&$ccParameter');
+
+    // Encode and launch the mailto URL
+    html.window.open(params.toString(), 'email');
   }
 }
