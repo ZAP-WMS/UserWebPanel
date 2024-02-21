@@ -2415,19 +2415,19 @@ class _ViewSummaryState extends State<ViewSummary> {
       ),
     );
 
-    final List<int> pdfData = await pdf.save();
-    const String pdfPath = 'SafetyReport.pdf';
+    pdfData = await pdf.save();
+    pdfPath = 'SafetyReport.pdf';
 
     // Save the PDF file to device storage
     if (kIsWeb) {
       html.AnchorElement(
           href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath)
+        ..setAttribute("download", pdfPath!)
         ..click();
     } else {
       const Text('Sorry it is not ready for mobile platform');
     }
-
+    uploadPdf(pdfData, pdfPath!);
     pr!.hide();
     // // For mobile platforms
     // final String dir = (await getApplicationDocumentsDirectory()).path;
@@ -2693,5 +2693,202 @@ class _ViewSummaryState extends State<ViewSummary> {
         ],
       );
     }));
+  }
+
+  _showCheckboxDialog(BuildContext context, CheckboxProvider checkboxProvider,
+      String depoName) {
+    checkboxProvider.myCcBooleanValue.clear();
+    checkboxProvider.myToBooleanValue.clear();
+    checkboxProvider.myCcBooleanValue.add(false);
+    checkboxProvider.myToBooleanValue.add(false);
+    checkboxProvider.ccValue.clear();
+    checkboxProvider.toValue.clear();
+
+    // List<String>? currentToValue = [];
+    // List<String>? currentCcValue = [];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Consumer<CheckboxProvider>(
+          builder: (context, value, child) {
+            return Container(
+              padding: const EdgeInsetsDirectional.all(0),
+              margin: const EdgeInsets.all(15),
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: AlertDialog(
+                title: const Text('Choose Required Filled For Email'),
+                content: Row(mainAxisSize: MainAxisSize.max, children: [
+                  Expanded(
+                    child: Column(children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          'Choose To',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: black,
+                              fontSize: 18),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      ...List.generate(
+                        value.myToMailValue.length,
+                        (index) {
+                          // print('iji$index');
+
+                          for (int i = 0;
+                              i <= value.myToMailValue.length;
+                              i++) {
+                            checkboxProvider.defaultToBooleanValue.add(false);
+                          }
+
+                          return Flexible(
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  // title: Text(value.myCcMailValue[index]),
+                                  value: value.myToBooleanValue[index],
+                                  onChanged: (bool? newboolean) {
+                                    if (newboolean != null) {
+                                      checkboxProvider.setMyToBooleanValue(
+                                          index, newboolean);
+                                    }
+
+                                    if (value.myToBooleanValue[index] != null &&
+                                        value.myToBooleanValue[index] == true) {
+                                      print('index$index');
+                                      checkboxProvider.getCurrentToValue(
+                                          index, value.myToMailValue[index]);
+                                    } else {
+                                      value.toValue
+                                          .remove(value.myToMailValue[index]);
+                                    }
+                                    print(value.ccValue);
+                                  },
+                                ),
+                                Text(
+                                  value.myToMailValue[index],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ]),
+                  ),
+                  Expanded(
+                    child: Column(children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          'Choose Cc',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: black,
+                              fontSize: 18),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                      ...List.generate(
+                        value.myCcMailValue.length,
+                        (index) {
+                          // print('iji$index');
+                          for (int i = 0;
+                              i <= value.myCcMailValue.length;
+                              i++) {
+                            checkboxProvider.defaultCcBooleanValue.add(false);
+                          }
+                          return Flexible(
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: value.myCcBooleanValue[index],
+                                  onChanged: (bool? newboolean) {
+                                    if (newboolean != null) {
+                                      checkboxProvider.setMyCcBooleanValue(
+                                          index, newboolean);
+                                    }
+                                    if (value.myCcBooleanValue[index] != null &&
+                                        value.myCcBooleanValue[index] == true) {
+                                      print('index$index');
+                                      checkboxProvider.getCurrentCcValue(
+                                          index, value.myCcMailValue[index]);
+                                    } else {
+                                      value.ccValue
+                                          .remove(value.myCcMailValue[index]);
+                                    }
+                                  },
+                                ),
+                                Text(value.myCcMailValue[index]),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ]),
+                  ),
+                ]),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Close'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // Do something with the checked items
+                      print(checkboxProvider.ccValue);
+                      widget.id == 'Daily Report'
+                          ? _generateDailyPDF().whenComplete(() {
+                              savePdfAndSendEmail(
+                                  pdfData,
+                                  pdfPath!,
+                                  'Daily Project Details of $depoName',
+                                  'Todays+Daily+Report',
+                                  checkboxProvider.toValue,
+                                  checkboxProvider.ccValue);
+                            })
+                          : widget.id == 'Monthly Report'
+                              ? _generateMonthlyPdf().whenComplete(() {
+                                  savePdfAndSendEmail(
+                                      pdfData,
+                                      pdfPath!,
+                                      'Daily Project Details of $depoName',
+                                      'Todays+Daily+Report',
+                                      checkboxProvider.toValue,
+                                      checkboxProvider.ccValue);
+                                })
+                              : _generateEnergyPDF().whenComplete(() {
+                                  savePdfAndSendEmail(
+                                      pdfData,
+                                      pdfPath!,
+                                      'Daily Project Details of $depoName',
+                                      'Todays+Daily+Report',
+                                      checkboxProvider.toValue,
+                                      checkboxProvider.ccValue);
+                                });
+
+                      // sendEmail(
+                      //     'Daily Project Details of $depoName'
+                      //         .split('+')
+                      //         .join(' '),
+                      //     'hiii amirr how are you'.split('+').join(' '),
+                      //     'https://firebasestorage.googleapis.com/v0/b/tp-zap-solz.appspot.com/o/Downloaded%20File%2FDaily%20Report.pdf?alt=media&token=8c8918b5-d0f7-4fc0-8681-21d812634f1a',
+                      //     checkboxProvider.toValue,
+                      //     checkboxProvider.ccValue);
+
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Send'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }
