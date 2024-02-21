@@ -245,11 +245,47 @@ class _ViewSummaryState extends State<ViewSummary> {
                                                   Icons.today,
                                                   color: blue,
                                                 )),
-                                            Text(widget.id == 'Monthly Report'
-                                                ? DateFormat.yMMMM()
-                                                    .format(startdate!)
-                                                : DateFormat.yMMMMd()
-                                                    .format(startdate!))
+                                            Container(
+                                              width: 200,
+                                              height: 40,
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 12),
+                                              child: TextField(
+                                                decoration:
+                                                    const InputDecoration(
+                                                  enabledBorder:
+                                                      InputBorder.none,
+                                                  focusedBorder:
+                                                      InputBorder.none,
+                                                ),
+                                                onSubmitted: (value) {
+                                                  print(value);
+                                                  DateTime date =
+                                                      DateFormat('MMMM d, yyyy')
+                                                          .parse(value);
+
+                                                  setState(() {
+                                                    startdate = date;
+                                                  });
+                                                },
+                                                controller:
+                                                    TextEditingController(
+                                                        text: widget.id ==
+                                                                'Monthly Report'
+                                                            ? DateFormat.yMMMM()
+                                                                .format(
+                                                                    startdate!)
+                                                            : DateFormat
+                                                                    .yMMMMd()
+                                                                .format(
+                                                                    startdate!)),
+                                              ),
+                                            )
+                                            // Text(widget.id == 'Monthly Report'
+                                            //     ? DateFormat.yMMMM()
+                                            //         .format(startdate!)
+                                            //     : DateFormat.yMMMMd()
+                                            //         .format(startdate!))
                                           ],
                                         ),
                                       ],
@@ -271,15 +307,44 @@ class _ViewSummaryState extends State<ViewSummary> {
                                         border: Border.all(color: blue)),
                                     child: Row(
                                       children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              DateFormat.yMMMMd()
-                                                  .format(enddate!),
-                                              textAlign: TextAlign.center,
-                                            )
-                                          ],
-                                        ),
+                                        Container(
+                                          width: 200,
+                                          height: 40,
+                                          padding:
+                                              const EdgeInsets.only(bottom: 12),
+                                          child: TextField(
+                                            decoration: const InputDecoration(
+                                              enabledBorder: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                            ),
+                                            onSubmitted: (value) {
+                                              print(value);
+                                              DateTime date =
+                                                  DateFormat('MMMM d, yyyy')
+                                                      .parse(value);
+
+                                              setState(() {
+                                                enddate = date;
+                                              });
+                                            },
+                                            controller: TextEditingController(
+                                                text: widget.id ==
+                                                        'Monthly Report'
+                                                    ? DateFormat.yMMMM()
+                                                        .format(enddate!)
+                                                    : DateFormat.yMMMMd()
+                                                        .format(enddate!)),
+                                          ),
+                                        )
+                                        // Row(
+                                        //   children: [
+                                        //     Text(
+                                        //       DateFormat.yMMMMd()
+                                        //           .format(enddate!),
+                                        //       textAlign: TextAlign.center,
+                                        //     )
+                                        //   ],
+                                        // ),
                                       ],
                                     ),
                                   ),
@@ -341,10 +406,39 @@ class _ViewSummaryState extends State<ViewSummary> {
                                           );
                                         },
                                         icon: const Icon(Icons.today)),
-                                    Text(widget.id == 'Monthly Report'
-                                        ? DateFormat.yMMMM().format(startdate!)
-                                        : DateFormat.yMMMMd()
-                                            .format(startdate!))
+
+                                    Container(
+                                      width: 200,
+                                      height: 40,
+                                      padding:
+                                          const EdgeInsets.only(bottom: 12),
+                                      child: TextField(
+                                        decoration: const InputDecoration(
+                                          enabledBorder: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                        ),
+                                        onSubmitted: (value) {
+                                          print(value);
+                                          DateTime date =
+                                              DateFormat('MMMM yyyy')
+                                                  .parse(value);
+
+                                          setState(() {
+                                            startdate = date;
+                                          });
+                                        },
+                                        controller: TextEditingController(
+                                            text: widget.id == 'Monthly Report'
+                                                ? DateFormat.yMMMM()
+                                                    .format(startdate!)
+                                                : DateFormat.yMMMMd()
+                                                    .format(startdate!)),
+                                      ),
+                                    )
+                                    // Text(widget.id == 'Monthly Report'
+                                    //     ? DateFormat.yMMMM().format(startdate!)
+                                    //     : DateFormat.yMMMMd()
+                                    //         .format(startdate!))
                                   ],
                                 ),
                               ),

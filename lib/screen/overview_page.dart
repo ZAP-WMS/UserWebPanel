@@ -181,7 +181,7 @@ class _OverviewPageState extends State<OverviewPage> {
           ? LoadingPage()
           : GridView.count(
               crossAxisCount: 4,
-              childAspectRatio: 1.8,
+              childAspectRatio: 1.6,
               children: List.generate(desription.length, (index) {
                 return cards(desription[index], imagedata[index], index);
               }),
