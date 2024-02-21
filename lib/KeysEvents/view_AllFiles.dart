@@ -1,4 +1,5 @@
 import 'package:assingment/FirebaseApi/firebase_api.dart';
+import 'package:assingment/Planning_Pages/civil_quality_checklist.dart';
 import 'package:assingment/components/Loading_page.dart';
 import 'package:assingment/widget/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -38,25 +39,29 @@ class _ViewAllPdfState extends State<ViewAllPdf> {
 
   @override
   void initState() {
+    print(widget.title);
     futureFiles = widget.title == 'QualityChecklist'
         ? FirebaseApi.listAll(
             '${widget.title}/${widget.subtitle}/${widget.cityName}/${widget.depoName}/${widget.userId}/${widget.fldrName}/${widget.date}/${widget.srNo}')
-        : widget.title == 'ClosureReport'
-            ? FirebaseApi.listAll(
-                '${widget.title}/${widget.cityName}/${widget.depoName}/${widget.userId}/${widget.docId}')
-            : widget.title == 'Key Events' || widget.title == 'Overview Page'
+        : widget.title == 'jmr'
+            ? FirebaseApi.listAll(widget.fldrName!)
+            : widget.title == 'ClosureReport'
                 ? FirebaseApi.listAll(
                     '${widget.title}/${widget.cityName}/${widget.depoName}/${widget.userId}/${widget.docId}')
-                : widget.title == '/BOQSurvey' ||
-                        widget.title == '/BOQElectrical' ||
-                        widget.title == '/BOQCivil'
+                : widget.title == 'Key Events' ||
+                        widget.title == 'Overview Page'
                     ? FirebaseApi.listAll(
-                        '${widget.title}/${widget.cityName}/${widget.depoName}/${widget.docId}')
-                    : FirebaseApi.listAll(
-                        '${widget.title}/${widget.cityName}/${widget.depoName}/${widget.userId}/${widget.date}/${widget.docId}');
+                        '${widget.title}/${widget.cityName}/${widget.depoName}/${widget.userId}')
+                    : widget.title == '/BOQSurvey' ||
+                            widget.title == '/BOQElectrical' ||
+                            widget.title == '/BOQCivil'
+                        ? FirebaseApi.listAll(
+                            '${widget.title}/${widget.cityName}/${widget.depoName}/${widget.docId}')
+                        : FirebaseApi.listAll(
+                            '${widget.title}/${widget.cityName}/${widget.depoName}/${widget.userId}/${widget.date}/${widget.docId}');
 
-    print(
-        '${widget.title}/${widget.cityName}/${widget.depoName}/${widget.docId}');
+    // print(
+    //     '${widget.title}/${widget.cityName}/${widget.depoName}/${widget.docId}');
 
     super.initState();
   }
@@ -126,27 +131,27 @@ class _ViewAllPdfState extends State<ViewAllPdf> {
     final isImage = ['.jpeg', '.jpg', '.png'].any(file.name.contains);
     final isPdf = ['.pdf'].any(file.name.contains);
     final isexcel = ['.xlsx'].any(file.name.contains);
+
     return Column(
       children: [
         InkWell(
-          child: Container(
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.all(10),
-              alignment: Alignment.center,
-              height: 120,
-              width: 120,
-              child: isImage
-                  ? Image.network(
-                      file.url,
-                      fit: BoxFit.fill,
-                    )
-                  : isPdf
-                      ? Image.asset('assets/pdf_logo.png')
-                      : Image.asset('assets/excel.png')),
-          //PdfThumbnail.fromFile(file.ref.fullPath, currentPage: 2)),
-          onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => ImagePage(file: file))),
-        ),
+            child: Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
+                alignment: Alignment.center,
+                height: 120,
+                width: 120,
+                child: isImage
+                    ? Image.network(
+                        file.url,
+                        fit: BoxFit.fill,
+                      )
+                    : isPdf
+                        ? Image.asset('assets/pdf_logo.png')
+                        : Image.asset('assets/excel.png')),
+            //PdfThumbnail.fromFile(file.ref.fullPath, currentPage: 2)),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ImagePage(file: file)))),
         Text(
           file.name,
           textAlign: TextAlign.center,

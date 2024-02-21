@@ -989,7 +989,7 @@ class _CivilQualityChecklistState extends State<CivilQualityChecklist> {
                                         ),
                                         GridColumn(
                                           columnName: 'View',
-                                          allowEditing: true,
+                                          allowEditing: false,
                                           width: 150,
                                           label: Container(
                                             alignment: Alignment.center,
@@ -1187,7 +1187,7 @@ class _CivilQualityChecklistState extends State<CivilQualityChecklist> {
                                   ),
                                   GridColumn(
                                     columnName: 'View',
-                                    allowEditing: true,
+                                    allowEditing: false,
                                     width: 150,
                                     label: Container(
                                       alignment: Alignment.center,

@@ -208,7 +208,7 @@ class _UploadDocumentState extends State<UploadDocument> {
                                           : '${widget.pagetitle}/${widget.cityName}/${widget.depoName}/${widget.userId}/${widget.date}/${widget.fldrName}/${result!.files.first.name}');
 
                               // String? fileName = result!.files.first.name;
-
+                              print('refname - $refname');
                               await FirebaseStorage.instance
                                   .ref(refname)
                                   .putData(
