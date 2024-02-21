@@ -1,7 +1,6 @@
 import 'package:assingment/Splash/splash_screen.dart';
 
 import 'package:assingment/provider/All_Depo_Select_Provider.dart';
-import 'package:assingment/provider/checkbox_provider.dart';
 import 'package:assingment/provider/demandEnergyProvider.dart';
 import 'package:assingment/provider/energy_provider.dart';
 import 'package:assingment/provider/hover_provider.dart';
@@ -44,7 +43,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => AllDepoSelectProvider()),
         ChangeNotifierProvider(create: (context) => DemandEnergyProvider()),
         ChangeNotifierProvider(create: (context) => HoverProvider()),
-        ChangeNotifierProvider(create: (context) => CheckboxProvider())
       ],
       child: MaterialApp(
         // initialRoute: '/splash',
@@ -57,7 +55,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           scrollbarTheme: ScrollbarThemeData(
               interactive: true,
-              thickness: const MaterialStatePropertyAll(5.0),
+              thickness: const MaterialStatePropertyAll(7.0),
               thumbColor: MaterialStatePropertyAll(blue)),
           scaffoldBackgroundColor: Colors.white,
           dividerColor: const Color.fromARGB(255, 2, 42, 75),

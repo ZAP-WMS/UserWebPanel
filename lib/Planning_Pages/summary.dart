@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../Authentication/auth_service.dart';
 import '../components/loading_page.dart';
 import '../datasource/dailyproject_datasource.dart';
@@ -27,12 +28,10 @@ import '../datasource/safetychecklist_datasource.dart';
 import '../model/daily_projectModel.dart';
 import '../model/monthly_projectModel.dart';
 import '../model/safety_checklistModel.dart';
-import '../provider/checkbox_provider.dart';
 import '../provider/summary_provider.dart';
 import '../widget/nodata_available.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'dart:html' as html;
 
 class ViewSummary extends StatefulWidget {
@@ -82,24 +81,16 @@ class _ViewSummaryState extends State<ViewSummary> {
   bool _isLoading = false;
   dynamic userId;
   ProgressDialog? pr;
-  String url = '';
-  CheckboxProvider? _checkboxProvider;
-  List<int> pdfData = [];
-  String? pdfPath;
 
   @override
   void initState() {
-    _checkboxProvider = Provider.of<CheckboxProvider>(context, listen: false);
-    _checkboxProvider!.fetchCcMaidId();
-    _checkboxProvider!.fetchToMaidId();
     pr = ProgressDialog(context,
         customBody:
             Container(height: 200, width: 100, child: const LoadingPdf()));
 
     super.initState();
     _summaryProvider = Provider.of<SummaryProvider>(context, listen: false);
-    dailyproject = _summaryProvider!.dailydata;
-    getPath();
+
     getUserId().then((value) {
       Stream _stream = FirebaseFirestore.instance
           .collection('MonthlyProjectReport2')
@@ -120,30 +111,8 @@ class _ViewSummaryState extends State<ViewSummary> {
     print('Hello worlds');
   }
 
-  getPath() async {
-    dailyproject = _summaryProvider!.dailydata;
-    for (int i = 0; i < dailyproject.length; i++) {
-      String imagesPath =
-          '/Daily Report/${widget.cityName}/${widget.depoName}/${widget.userId}/${dailyproject[i].date}/${i + 1}';
-      print(imagesPath);
-
-      ListResult result =
-          await FirebaseStorage.instance.ref().child(imagesPath).listAll();
-
-      if (result.items.isNotEmpty) {
-        for (var image in result.items) {
-          url = await image.getDownloadURL();
-          setState(() {
-            print(url);
-          });
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    print('Scaffold build');
     widget.id == 'Daily Report'
         ? _summaryProvider!.fetchdailydata(
             widget.depoName!, widget.userId, startdate!, enddate!)
@@ -158,7 +127,6 @@ class _ViewSummaryState extends State<ViewSummary> {
           child: CustomAppBar(
               depotName: widget.depoName,
               cityname: widget.cityName,
-              haveSend: true,
               donwloadFunction: widget.id == 'Daily Report'
                   ? _generateDailyPDF
                   : widget.id == 'Monthly Report'
@@ -167,15 +135,8 @@ class _ViewSummaryState extends State<ViewSummary> {
                           ? _generateEnergyPDF
                           : _generateSafetyPDF,
               isDownload: true,
-              sendEmail: () {
-                print('err${url}');
-                _showCheckboxDialog(
-                    context, _checkboxProvider!, widget.depoName!);
-                // sendEmail('njhjhuihui', 'hiii amirr how are you', url,
-                //     ['suraj@zapwms.com', 'aamir@zapwms.com']);
-              },
               text:
-                  ' ${widget.cityName}/ ${widget.depoName}/ ${widget.id}/ View Summary'),
+                  ' ${widget.cityName} / ${widget.depoName} / ${widget.id} / View Summary'),
         ),
         // AppBar(
         //   title: Text(
@@ -266,7 +227,10 @@ class _ViewSummaryState extends State<ViewSummary> {
                                                     ),
                                                   );
                                                 },
-                                                icon: const Icon(Icons.today)),
+                                                icon: Icon(
+                                                  Icons.today,
+                                                  color: blue,
+                                                )),
                                             Text(widget.id == 'Monthly Report'
                                                 ? DateFormat.yMMMM()
                                                     .format(startdate!)
@@ -285,6 +249,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Container(
+                                    padding: const EdgeInsets.only(left: 10.0),
                                     width: 250,
                                     height: 40,
                                     decoration: BoxDecoration(
@@ -1734,14 +1699,36 @@ class _ViewSummaryState extends State<ViewSummary> {
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text(
-                    'Place:  ${widget.cityName}/${widget.depoName}',
-                    textScaleFactor: 1.1,
-                  ),
-                  pw.Text(
-                    'Date:  $startdate ',
-                    textScaleFactor: 1.1,
-                  )
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    const pw.TextSpan(
+                        text: 'Place : ',
+                        style:
+                            pw.TextStyle(color: PdfColors.black, fontSize: 17)),
+                    pw.TextSpan(
+                        text: '${widget.cityName} / ${widget.depoName}',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15))
+                  ])),
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    const pw.TextSpan(
+                        text: 'Date : ',
+                        style:
+                            pw.TextStyle(color: PdfColors.black, fontSize: 17)),
+                    pw.TextSpan(
+                        text:
+                            '${startdate!.day}-${startdate!.month}-${startdate!.year} to ${enddate!.day}-${enddate!.month}-${enddate!.year}',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15))
+                  ])),
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    pw.TextSpan(
+                        text: 'UserID : $userId',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15)),
+                  ])),
                 ]),
             pw.SizedBox(height: 20)
           ]),
@@ -1874,7 +1861,7 @@ class _ViewSummaryState extends State<ViewSummary> {
 
     for (int i = 0; i < dailyproject.length; i++) {
       String imagesPath =
-          '/Daily Report/${widget.cityName}/${widget.depoName}/${widget.userId}/${dailyproject[i].date}/${i + 1}';
+          '/Daily Report/${widget.cityName}/${widget.depoName}/${widget.userId}/${dailyproject[i].date}/${globalRowIndex[i]}';
       print(imagesPath);
 
       ListResult result =
@@ -1883,7 +1870,6 @@ class _ViewSummaryState extends State<ViewSummary> {
       if (result.items.isNotEmpty) {
         for (var image in result.items) {
           String downloadUrl = await image.getDownloadURL();
-          print('downloadurl$downloadUrl');
           if (image.name.endsWith('.pdf')) {
             imageUrls.add(
               pw.Container(
@@ -1920,7 +1906,7 @@ class _ViewSummaryState extends State<ViewSummary> {
                   child: pw.Text('')),
             );
           }
-        } else {
+        } else if (imageUrls.length > 2) {
           int imageLoop = 10 - imageUrls.length;
           for (int i = 0; i < imageLoop; i++) {
             imageUrls.add(
@@ -2047,29 +2033,51 @@ class _ViewSummaryState extends State<ViewSummary> {
                     ]),
               ]));
         },
-        // footer: (pw.Context context) {
-        //   return pw.Container(
-        //       alignment: pw.Alignment.centerRight,
-        //       margin: const pw.EdgeInsets.only(top: 1.0 * PdfPageFormat.cm),
-        //       child: pw.Text('User ID - $user_id',
-        //           // 'Page ${context.pageNumber} of ${context.pagesCount}',
-        //           style: pw.Theme.of(context)
-        //               .defaultTextStyle
-        //               .copyWith(color: PdfColors.black)));
-        // },
+        footer: (pw.Context context) {
+          return pw.Container(
+              alignment: pw.Alignment.centerRight,
+              margin: const pw.EdgeInsets.only(top: 1.0 * PdfPageFormat.cm),
+              child: pw.Text('User ID - $userId',
+                  // 'Page ${context.pageNumber} of ${context.pagesCount}',
+                  style: pw.Theme.of(context)
+                      .defaultTextStyle
+                      .copyWith(color: PdfColors.black)));
+        },
         build: (pw.Context context) => <pw.Widget>[
           pw.Column(children: [
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text(
-                    'Place:  ${widget.cityName}/${widget.depoName}',
-                    textScaleFactor: 1.6,
-                  ),
-                  pw.Text(
-                    'Date: ${startdate?.day}-${startdate?.month}-${startdate?.year} to ${enddate?.day}-${enddate?.month}-${enddate?.year} ',
-                    textScaleFactor: 1.6,
-                  )
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    const pw.TextSpan(
+                        text: 'Place : ',
+                        style:
+                            pw.TextStyle(color: PdfColors.black, fontSize: 17)),
+                    pw.TextSpan(
+                        text: '${widget.cityName} / ${widget.depoName}',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15))
+                  ])),
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    const pw.TextSpan(
+                        text: 'Date : ',
+                        style:
+                            pw.TextStyle(color: PdfColors.black, fontSize: 17)),
+                    pw.TextSpan(
+                        text:
+                            '${startdate!.day}-${startdate!.month}-${startdate!.year} to ${enddate!.day}-${enddate!.month}-${enddate!.year}',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15))
+                  ])),
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    pw.TextSpan(
+                        text: 'UserID : $userId',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15)),
+                  ])),
                 ]),
             pw.SizedBox(height: 20)
           ]),
@@ -2093,81 +2101,22 @@ class _ViewSummaryState extends State<ViewSummary> {
       ),
     );
 
-    pdfData = await pdf.save();
+    final List<int> pdfData = await pdf.save();
+    const String pdfPath = 'Daily Report.pdf';
 
-    pdfPath = 'Daily Report.pdf';
-    String? dataUrl;
     // Save the PDF file to device storage
     if (kIsWeb) {
-      //  String downloadUrl = await pdfData!.getDownloadURL();
-      dataUrl = "data:application/octet-stream;base64,${base64Encode(pdfData)}";
-
-      // print('pdfdata$dataUrl');
       html.AnchorElement(
           href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath!)
+        ..setAttribute("download", pdfPath)
         ..click();
     }
-    uploadPdf(pdfData, pdfPath!);
-    // savePdfAndSendEmail(
-    //     pdfData, pdfPath, 'subject', 'body', ['che'], ['ccRecipients']);
 
     pr!.hide();
-  }
 
-  Future<void> savePdfAndSendEmail(
-      List<int> pdfData,
-      String pdfPath,
-      String subject,
-      String body,
-      List<String> toRecipients,
-      List<String> ccRecipients) async {
-    // Upload the PDF data to Firebase Storage
-    String pdfUrl = await uploadPdf(pdfData, pdfPath);
-
-    // Send email with the PDF URL as an attachment
-
-    sendEmail('subject', body, pdfUrl, toRecipients, ccRecipients);
-  }
-
-  sendEmail(String subject, String body, String attachmentUrl,
-      List<String> toRecipients, List<String> ccRecipients) {
-    // Construct the mailto URL
-
-    String encodedSubject = Uri.decodeComponent(subject);
-    String encodedBody = Uri.decodeComponent(body);
-    // String encodedAttachmentUrl = attachmentUrl;
-    String toParameter = toRecipients.map((cc) => cc).join(',');
-    String ccParameter = ccRecipients.map((cc) => cc).join(',');
-
-    final Uri params = Uri(
-      scheme: 'mailto',
-      path: '', // email address goes here
-      queryParameters: {
-        'subject': encodedSubject,
-        'body': 'Attachment: $attachmentUrl',
-        // 'attachment': attachmentUrl,
-        //encodedAttachmentUrl, // attachment url if needed
-        'to': toParameter,
-        'cc': ccParameter,
-      },
-    );
-    print('gfgfh&$ccParameter');
-
-    // Encode and launch the mailto URL
-    html.window.open(params.toString(), 'email');
-  }
-
-  Future<String> uploadPdf(List<int> pdfData, String pdfPath) async {
-    // Upload the PDF data to Firebase Storage
-    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
-        .ref('Downloaded File')
-        // .child(path)
-        .child(pdfPath);
-    await ref.putData(Uint8List.fromList(pdfData));
-
-    // Get the download URL for the uploaded PDF file
-    return await ref.getDownloadURL();
+    // setState(() {
+    //   _isLoading = false;
+    // });
   }
 
   Future<void> _generateSafetyPDF() async {
@@ -2219,25 +2168,25 @@ class _ViewSummaryState extends State<ViewSummary> {
               padding: const pw.EdgeInsets.all(2.0),
               child: pw.Center(
                   child: pw.Text(
-                'Image1',
+                'Image5',
               ))),
           pw.Container(
               padding: const pw.EdgeInsets.all(2.0),
               child: pw.Center(
                   child: pw.Text(
-                'Image2',
+                'Image6',
               ))),
           pw.Container(
               padding: const pw.EdgeInsets.all(2.0),
               child: pw.Center(
                   child: pw.Text(
-                'Image3',
+                'Image7',
               ))),
           pw.Container(
               padding: const pw.EdgeInsets.all(2.0),
               child: pw.Center(
                   child: pw.Text(
-                'Image4',
+                'Image8',
               ))),
         ],
       ),
@@ -2413,14 +2362,36 @@ class _ViewSummaryState extends State<ViewSummary> {
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text(
-                    'Place:  ${widget.cityName}/${widget.depoName}',
-                    textScaleFactor: 1.1,
-                  ),
-                  pw.Text(
-                    'Date:  $startdate ',
-                    textScaleFactor: 1.1,
-                  )
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    const pw.TextSpan(
+                        text: 'Place : ',
+                        style:
+                            pw.TextStyle(color: PdfColors.black, fontSize: 17)),
+                    pw.TextSpan(
+                        text: '${widget.cityName} / ${widget.depoName}',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15))
+                  ])),
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    const pw.TextSpan(
+                        text: 'Date : ',
+                        style:
+                            pw.TextStyle(color: PdfColors.black, fontSize: 17)),
+                    pw.TextSpan(
+                        text:
+                            '${startdate!.day}-${startdate!.month}-${startdate!.year} to ${enddate!.day}-${enddate!.month}-${enddate!.year}',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15))
+                  ])),
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    pw.TextSpan(
+                        text: 'UserID : $userId',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15)),
+                  ])),
                 ]),
             pw.SizedBox(height: 20)
           ]),
@@ -2613,14 +2584,36 @@ class _ViewSummaryState extends State<ViewSummary> {
             pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text(
-                    'Place:  ${widget.cityName}/${widget.depoName}',
-                    textScaleFactor: 1.1,
-                  ),
-                  pw.Text(
-                    'Date:  $startdate ',
-                    textScaleFactor: 1.1,
-                  )
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    const pw.TextSpan(
+                        text: 'Place : ',
+                        style:
+                            pw.TextStyle(color: PdfColors.black, fontSize: 17)),
+                    pw.TextSpan(
+                        text: '${widget.cityName} / ${widget.depoName}',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15))
+                  ])),
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    const pw.TextSpan(
+                        text: 'Date : ',
+                        style:
+                            pw.TextStyle(color: PdfColors.black, fontSize: 17)),
+                    pw.TextSpan(
+                        text:
+                            '${startdate!.day}-${startdate!.month}-${startdate!.year} to ${enddate!.day}-${enddate!.month}-${enddate!.year}',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15))
+                  ])),
+                  pw.RichText(
+                      text: pw.TextSpan(children: [
+                    pw.TextSpan(
+                        text: 'UserID : $userId',
+                        style: const pw.TextStyle(
+                            color: PdfColors.blue700, fontSize: 15)),
+                  ])),
                 ]),
             pw.SizedBox(height: 20)
           ]),
@@ -2644,19 +2637,19 @@ class _ViewSummaryState extends State<ViewSummary> {
       ),
     );
 
-    pdfData = await pdf.save();
-    pdfPath = 'MonthlyReport.pdf';
+    final List<int> pdfData = await pdf.save();
+    const String pdfPath = 'MonthlyReport.pdf';
 
     // Save the PDF file to device storage
     if (kIsWeb) {
       html.AnchorElement(
           href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath!)
+        ..setAttribute("download", pdfPath)
         ..click();
     } else {
       const Text('Sorry it is not ready for mobile platform');
     }
-    uploadPdf(pdfData, pdfPath!);
+
     pr!.hide();
     // // For mobile platforms
     // final String dir = (await getApplicationDocumentsDirectory()).path;
@@ -2673,31 +2666,6 @@ class _ViewSummaryState extends State<ViewSummary> {
       userId = value;
     });
   }
-
-  // sendEmail(String subject, String body, String attachmentUrl,
-  //     List<String> ccRecipients) {
-  //   // Construct the mailto URL
-  //   subject = Uri.decodeComponent(subject);
-  //   String encodedBody = Uri.decodeComponent(body);
-  //   String encodedAttachmentUrl = Uri.encodeComponent(attachmentUrl);
-
-  //   String ccParameter = ccRecipients.map((cc) => cc).join(',');
-  //   final Uri params = Uri(
-  //     scheme: 'mailto',
-  //     path: '', // email address goes here
-  //     queryParameters: {
-  //       'subject': subject,
-  //       'body': encodedBody,
-  //       'attachment': encodedAttachmentUrl, // attachment url if needed
-  //       'to': ccParameter[0],
-  //       'cc': ccParameter,
-  //     },
-  //   );
-  //   print('gfgfh&$ccParameter');
-
-  //   // Encode and launch the mailto URL
-  //   html.window.open('${params.toString()}', 'email');
-  // }
 
   List<BarChartGroupData> barChartGroupData(List<dynamic> data) {
     return List.generate(data.length, ((index) {
@@ -2725,202 +2693,5 @@ class _ViewSummaryState extends State<ViewSummary> {
         ],
       );
     }));
-  }
-
-  _showCheckboxDialog(BuildContext context, CheckboxProvider checkboxProvider,
-      String depoName) {
-    checkboxProvider.myCcBooleanValue.clear();
-    checkboxProvider.myToBooleanValue.clear();
-    checkboxProvider.myCcBooleanValue.add(false);
-    checkboxProvider.myToBooleanValue.add(false);
-    checkboxProvider.ccValue.clear();
-    checkboxProvider.toValue.clear();
-
-    // List<String>? currentToValue = [];
-    // List<String>? currentCcValue = [];
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Consumer<CheckboxProvider>(
-          builder: (context, value, child) {
-            return Container(
-              padding: const EdgeInsetsDirectional.all(0),
-              margin: const EdgeInsets.all(15),
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: AlertDialog(
-                title: const Text('Choose Required Filled For Email'),
-                content: Row(mainAxisSize: MainAxisSize.max, children: [
-                  Expanded(
-                    child: Column(children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Text(
-                          'Choose To',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: black,
-                              fontSize: 18),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      ...List.generate(
-                        value.myToMailValue.length,
-                        (index) {
-                          // print('iji$index');
-
-                          for (int i = 0;
-                              i <= value.myToMailValue.length;
-                              i++) {
-                            checkboxProvider.defaultToBooleanValue.add(false);
-                          }
-
-                          return Flexible(
-                            child: Row(
-                              children: [
-                                Checkbox(
-                                  // title: Text(value.myCcMailValue[index]),
-                                  value: value.myToBooleanValue[index],
-                                  onChanged: (bool? newboolean) {
-                                    if (newboolean != null) {
-                                      checkboxProvider.setMyToBooleanValue(
-                                          index, newboolean);
-                                    }
-
-                                    if (value.myToBooleanValue[index] != null &&
-                                        value.myToBooleanValue[index] == true) {
-                                      print('index$index');
-                                      checkboxProvider.getCurrentToValue(
-                                          index, value.myToMailValue[index]);
-                                    } else {
-                                      value.toValue
-                                          .remove(value.myToMailValue[index]);
-                                    }
-                                    print(value.ccValue);
-                                  },
-                                ),
-                                Text(
-                                  value.myToMailValue[index],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ]),
-                  ),
-                  Expanded(
-                    child: Column(children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Text(
-                          'Choose Cc',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: black,
-                              fontSize: 18),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      ...List.generate(
-                        value.myCcMailValue.length,
-                        (index) {
-                          // print('iji$index');
-                          for (int i = 0;
-                              i <= value.myCcMailValue.length;
-                              i++) {
-                            checkboxProvider.defaultCcBooleanValue.add(false);
-                          }
-                          return Flexible(
-                            child: Row(
-                              children: [
-                                Checkbox(
-                                  value: value.myCcBooleanValue[index],
-                                  onChanged: (bool? newboolean) {
-                                    if (newboolean != null) {
-                                      checkboxProvider.setMyCcBooleanValue(
-                                          index, newboolean);
-                                    }
-                                    if (value.myCcBooleanValue[index] != null &&
-                                        value.myCcBooleanValue[index] == true) {
-                                      print('index$index');
-                                      checkboxProvider.getCurrentCcValue(
-                                          index, value.myCcMailValue[index]);
-                                    } else {
-                                      value.ccValue
-                                          .remove(value.myCcMailValue[index]);
-                                    }
-                                  },
-                                ),
-                                Text(value.myCcMailValue[index]),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ]),
-                  ),
-                ]),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Close'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // Do something with the checked items
-                      print(checkboxProvider.ccValue);
-                      widget.id == 'Daily Report'
-                          ? _generateDailyPDF().whenComplete(() {
-                              savePdfAndSendEmail(
-                                  pdfData,
-                                  pdfPath!,
-                                  'Daily Project Details of $depoName',
-                                  'Todays+Daily+Report',
-                                  checkboxProvider.toValue,
-                                  checkboxProvider.ccValue);
-                            })
-                          : widget.id == 'Monthly Report'
-                              ? _generateMonthlyPdf().whenComplete(() {
-                                  savePdfAndSendEmail(
-                                      pdfData,
-                                      pdfPath!,
-                                      'Daily Project Details of $depoName',
-                                      'Todays+Daily+Report',
-                                      checkboxProvider.toValue,
-                                      checkboxProvider.ccValue);
-                                })
-                              : _generateEnergyPDF().whenComplete(() {
-                                  savePdfAndSendEmail(
-                                      pdfData,
-                                      pdfPath!,
-                                      'Daily Project Details of $depoName',
-                                      'Todays+Daily+Report',
-                                      checkboxProvider.toValue,
-                                      checkboxProvider.ccValue);
-                                });
-
-                      // sendEmail(
-                      //     'Daily Project Details of $depoName'
-                      //         .split('+')
-                      //         .join(' '),
-                      //     'hiii amirr how are you'.split('+').join(' '),
-                      //     'https://firebasestorage.googleapis.com/v0/b/tp-zap-solz.appspot.com/o/Downloaded%20File%2FDaily%20Report.pdf?alt=media&token=8c8918b5-d0f7-4fc0-8681-21d812634f1a',
-                      //     checkboxProvider.toValue,
-                      //     checkboxProvider.ccValue);
-
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Send'),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
   }
 }

@@ -1,5 +1,9 @@
 import 'package:assingment/KeysEvents/upload.dart';
+import 'package:assingment/KeysEvents/viewFIle.dart';
 import 'package:assingment/KeysEvents/view_AllFiles.dart';
+import 'package:assingment/Planning_Pages/quality_checklist.dart';
+import 'package:assingment/overview/daily_project.dart';
+import 'package:assingment/provider/summary_provider.dart';
 import 'package:assingment/widget/style.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +26,7 @@ class DailyDataSource extends DataGridSource {
       this.depoName, this.selectedDate, this.userId) {
     buildDataGridRows();
   }
+
   void buildDataGridRows() {
     dataGridRows = _dailyproject
         .map<DataGridRow>((dataGridRow) => dataGridRow.dataGridRow())
@@ -76,48 +81,81 @@ class DailyDataSource extends DataGridSource {
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 5.0),
           child: (dataGridCell.columnName == 'view')
-              ? ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        mainContext,
-                        MaterialPageRoute(
-                          builder: (context) => ViewAllPdf(
-                            title: Pagetitle,
-                            cityName: cityName,
-                            depoName: depoName,
-                            userId: userId,
-                            date: row.getCells()[0].value.toString(),
-                            docId: dataGridRows.indexOf(row) + 1,
-                          ),
-                        ));
-                  },
-                  child: const Text('View'))
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(left: 5.0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                mainContext,
+                                MaterialPageRoute(
+                                  builder: (context) => ViewAllPdf(
+                                    title: Pagetitle,
+                                    cityName: cityName,
+                                    depoName: depoName,
+                                    userId: userId,
+                                    date: row.getCells()[0].value.toString(),
+                                    docId: globalRowIndex.isNotEmpty
+                                        ? globalRowIndex[
+                                            dataGridRows.indexOf(row)]
+                                        : dataGridRows.indexOf(row) + 1,
+                                  ),
+                                ));
+                          },
+                          child: const Text('View')),
+                    ),
+                    Container(
+                      child: isShowPinIcon[dataGridRows.indexOf(row)]
+                          ? Icon(
+                              Icons.attach_file_outlined,
+                              color: blue,
+                              size: 18,
+                            )
+                          : Container(),
+                    ),
+                    Text(
+                      globalItemLengthList[dataGridRows.indexOf(row)] != 0
+                          ? globalItemLengthList[dataGridRows.indexOf(row)] > 9
+                              ? '${globalItemLengthList[dataGridRows.indexOf(row)]}+'
+                              : '${globalItemLengthList[dataGridRows.indexOf(row)]}'
+                          : '',
+                      style: TextStyle(color: blue, fontSize: 11),
+                    )
+                  ],
+                )
               : (dataGridCell.columnName == 'upload')
                   ? ElevatedButton(
                       onPressed: () {
                         Navigator.push(
-                            mainContext,
-                            MaterialPageRoute(
-                              builder: (context) => UploadDocument(
-                                pagetitle: Pagetitle,
-                                customizetype: const [
-                                  'jpg',
-                                  'jpeg',
-                                  'png',
-                                  'pdf'
-                                ],
-                                cityName: cityName,
-                                depoName: depoName,
-                                userId: userId,
-                                date: selectedDate,
-                                fldrName: '${dataGridRows.indexOf(row) + 1}',
-                              ),
-                            ));
+                          mainContext,
+                          MaterialPageRoute(
+                            builder: (context) => UploadDocument(
+                              pagetitle: Pagetitle,
+                              customizetype: const [
+                                'jpg',
+                                'jpeg',
+                                'png',
+                                'pdf'
+                              ],
+                              cityName: cityName,
+                              depoName: depoName,
+                              userId: userId,
+                              date: selectedDate,
+                              fldrName: '${dataGridRows.indexOf(row) + 1}',
+                            ),
+                          ),
+                        );
                       },
-                      child: const Text('Upload'))
+                      child: const Text(
+                        'Upload',
+                      ),
+                    )
                   : (dataGridCell.columnName == 'Add')
                       ? ElevatedButton(
                           onPressed: () {
+                            isShowPinIcon.add(false);
                             addRowAtIndex(
                                 dataRowIndex + 1,
                                 DailyProjectModel(

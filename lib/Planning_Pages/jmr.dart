@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'package:assingment/KeysEvents/view_AllFiles.dart';
 import 'package:assingment/overview/Jmr/jmr_home.dart';
 import 'package:assingment/components/loading_page.dart';
+import 'package:assingment/overview/Jmr/view_jmr_files.dart';
 import 'package:assingment/widget/style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
@@ -25,6 +29,7 @@ class Jmr extends StatefulWidget {
 }
 
 class _JmrState extends State<Jmr> {
+  String fileName = '';
   TextEditingController selectedDepoController = TextEditingController();
   List currentTabList = [];
   String selectedDepot = '';
@@ -56,6 +61,7 @@ class _JmrState extends State<Jmr> {
 
   @override
   void dispose() {
+    selectedDepoController.dispose();
     super.dispose();
   }
 
@@ -186,7 +192,7 @@ class _JmrState extends State<Jmr> {
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: Container(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
         height: 150,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -195,24 +201,30 @@ class _JmrState extends State<Jmr> {
           children: [
             Container(
               padding: const EdgeInsets.only(
-                  bottom: 8.0, left: 2.0, right: 2.0, top: 6.0),
-              decoration:
-                  const BoxDecoration(border: Border(bottom: BorderSide())),
+                  bottom: 5.0, left: 1.0, right: 1.0, top: 5.0),
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(),
+                ),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  InkWell(
+                      onTap: () {},
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 5.0),
+                        padding: const EdgeInsets.only(
+                            right: 8.0, left: 8.0, top: 4.0, bottom: 4.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(color: blue),
+                        ),
+                        child: Text(
+                          title,
+                          style: TextStyle(color: blue),
+                        ),
+                      )),
                   ElevatedButton(
                     onPressed: () {
                       index != 0
@@ -287,9 +299,9 @@ class _JmrState extends State<Jmr> {
               ),
             ),
             const SizedBox(
-              height: 15.0,
+              height: 5.0,
             ),
-            SizedBox(
+            Container(
               height: 140,
               child: ListView.builder(
                 shrinkWrap: true,
@@ -332,6 +344,83 @@ class _JmrState extends State<Jmr> {
                 },
               ),
             ),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.blue),
+                      ),
+                      onPressed: () async {
+                        FilePickerResult? result =
+                            await FilePicker.platform.pickFiles();
+
+                        if (result != null) {
+                          final bytes = result.files.single.bytes;
+                          fileName = result.files.single.name;
+                          final storage = FirebaseStorage.instance;
+                          await storage
+                              .ref()
+                              .child(
+                                  'jmrFiles/${widget.cityName}/${widget.depoName}/$userId/${index + 1}/$fileName')
+                              .putData(bytes!);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.green,
+                              content: Text(
+                                'File Uploaded',
+                                style: TextStyle(color: white),
+                              )));
+                        } else {
+                          // User canceled the picker
+                        }
+                      },
+                      child: Text(
+                        'Upload',
+                        style: TextStyle(color: white),
+                      )),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ViewAllPdf(
+                                    cityName: widget.cityName,
+                                    depoName: widget.depoName,
+                                    title: 'jmr',
+                                    userId: userId,
+                                    fldrName:
+                                        'jmrFiles/${widget.cityName}/${widget.depoName}/$userId/${index + 1}',
+                                  )));
+
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => ViewJmrFiles(
+                      //               path:
+                      //                   'jmrFiles/${widget.cityName}/${widget.depoName}/$userId/${index + 1}',
+                      //             )
+                      //             )
+                      //             );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 5.0),
+                      padding: const EdgeInsets.only(
+                          right: 8.0, left: 8.0, top: 4.0, bottom: 4.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(color: Colors.blue),
+                      ),
+                      child: const Text(
+                        'View',
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),

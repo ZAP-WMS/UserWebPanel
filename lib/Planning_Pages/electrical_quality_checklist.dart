@@ -1006,7 +1006,7 @@ class _ElectricalQualityChecklistState
                                         ),
                                         GridColumn(
                                           columnName: 'View',
-                                          allowEditing: true,
+                                          allowEditing: false,
                                           width: 150,
                                           label: Container(
                                             padding: const EdgeInsets.symmetric(
@@ -1203,7 +1203,7 @@ class _ElectricalQualityChecklistState
                                   ),
                                   GridColumn(
                                     columnName: 'View',
-                                    allowEditing: true,
+                                    allowEditing: false,
                                     width: 150,
                                     label: Container(
                                       alignment: Alignment.center,

@@ -74,7 +74,7 @@ class MonthlyDataSource extends DataGridSource {
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(horizontal: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
           child:
               //  dataGridCell.columnName == 'Months'
               //     ? Row(
@@ -505,10 +505,9 @@ class MonthlyDataSource extends DataGridSource {
         _getRegExp(isNumericType, isDateTimeType, column.columnName);
 
     return Container(
-      margin: const EdgeInsets.all(5.0),
       alignment: isNumericType ? Alignment.centerRight : Alignment.centerLeft,
       child: TextField(
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
         autofocus: true,
         controller: editingController..text = displayText,
         textAlign: isNumericType ? TextAlign.right : TextAlign.left,

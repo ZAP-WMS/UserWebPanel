@@ -1,8 +1,11 @@
 import 'package:assingment/model/daily_projectModel.dart';
 import 'package:assingment/model/energy_management.dart';
+import 'package:assingment/overview/daily_project.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+List<int> globalRowIndex = [];
 
 class SummaryProvider extends ChangeNotifier {
   List<DailyProjectModel> _dailydata = [];
@@ -24,6 +27,9 @@ class SummaryProvider extends ChangeNotifier {
 
   fetchdailydata(
       String depoName, String userId, DateTime date, DateTime endDate) async {
+    globalItemLengthList.clear();
+    isShowPinIcon.clear();
+
     final List<DailyProjectModel> loadeddata = [];
     _dailydata.clear();
     for (DateTime initialdate = endDate;
@@ -32,19 +38,20 @@ class SummaryProvider extends ChangeNotifier {
       print(date.add(const Duration(days: 1)));
       print(DateFormat.yMMMMd().format(initialdate));
       FirebaseFirestore.instance
-          .collection('DailyProjectReport2')
+          .collection('DailyProject3')
           .doc(depoName)
-          .collection('userId')
+          .collection(DateFormat.yMMMMd().format(initialdate))
           .doc(userId)
-          .collection('date')
-          .doc(DateFormat.yMMMMd().format(initialdate))
           .get()
           .then((value) {
         if (value.data() != null) {
           print('swswssw${value.data()!['data'].length}');
           for (int i = 0; i < value.data()!['data'].length; i++) {
+            globalItemLengthList.add(0);
+            isShowPinIcon.add(false);
             var _data = value.data()!['data'][i];
             loadeddata.add(DailyProjectModel.fromjson(_data));
+            globalRowIndex.add(i + 1);
           }
           _dailydata = loadeddata;
           notifyListeners();
@@ -55,6 +62,7 @@ class SummaryProvider extends ChangeNotifier {
 
   fetchEnergyData(String cityName, String depoName, String userId,
       DateTime date, DateTime endDate) async {
+    globalRowIndex.clear();
     final List<dynamic> timeIntervalList = [];
     final List<dynamic> energyConsumedList = [];
     int currentMonth = DateTime.now().month;
