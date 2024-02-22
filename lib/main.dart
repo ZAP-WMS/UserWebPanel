@@ -69,8 +69,11 @@ class MyApp extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),
                 borderSide: BorderSide(color: blue)),
+            disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: blue)),
             floatingLabelBehavior: FloatingLabelBehavior.auto,
-            focusColor: Colors.black,
+            focusColor: blue,
             // labelStyle: Colors.b
           ),
         ),
