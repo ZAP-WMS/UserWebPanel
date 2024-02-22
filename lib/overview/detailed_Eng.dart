@@ -2,6 +2,7 @@ import 'package:assingment/components/loading_page.dart';
 import 'package:assingment/datasource/detailedeng_datasource.dart';
 import 'package:assingment/model/detailed_engModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -25,6 +26,12 @@ class DetailedEng extends StatefulWidget {
 
 class _DetailedEngtState extends State<DetailedEng>
     with TickerProviderStateMixin {
+  List<String> tabNames = [
+    'RFC LAYOUT DRAWING',
+    'EV LAYOUT DRAWING',
+    'Shed LAYOUT DRAWING',
+  ];
+
   List<DetailedEngModel> DetailedProject = <DetailedEngModel>[];
   List<DetailedEngModel> DetailedProjectev = <DetailedEngModel>[];
   List<DetailedEngModel> DetailedProjectshed = <DetailedEngModel>[];
@@ -1730,5 +1737,30 @@ class _DetailedEngtState extends State<DetailedEng>
         ),
       ),
     );
+  }
+
+  Future<void> checkAvailableImage() async {
+    List<String> storageTitles = [
+      'DetailedEngRFC',
+      'DetailedEngEV',
+      'DetailedEngShed'
+    ];
+
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('DetailEngineering')
+        .doc(widget.depoName)
+        .collection(tabNames[_selectedIndex])
+        .doc(userId)
+        .get();
+
+    Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+
+    List<dynamic> listLen = data['data'];
+
+    for (int i = 0; i < listLen.length; i++) {
+      final storage = FirebaseStorage.instance
+          .ref()
+          .child('${storageTitles[_selectedIndex]}/');
+    }
   }
 }
