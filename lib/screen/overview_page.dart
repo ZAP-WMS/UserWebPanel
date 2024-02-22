@@ -1,8 +1,8 @@
 import 'package:assingment/KeysEvents/upload.dart';
-import 'package:assingment/Planning_Pages/jmr.dart';
 import 'package:assingment/Planning_Pages/quality_checklist.dart';
 import 'package:assingment/Planning_Pages/safety_checklist.dart';
 import 'package:assingment/components/page_routeBuilder.dart';
+import 'package:assingment/overview/Jmr/jmr.dart';
 import 'package:assingment/overview/closure_report.dart';
 import 'package:assingment/overview/daily_project.dart';
 import 'package:assingment/overview/detailed_Eng.dart';
