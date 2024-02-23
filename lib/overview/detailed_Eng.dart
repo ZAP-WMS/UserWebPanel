@@ -15,10 +15,15 @@ import '../datasource/detailedengEV_datasource.dart';
 import '../datasource/detailedengShed_datasource.dart';
 import '../widget/style.dart';
 
+List<dynamic> globalIndexDetailedList = [];
+List<bool> isShowPinIconInDetail = [false, false, false];
+
 class DetailedEng extends StatefulWidget {
   String? cityName;
   String? depoName;
-  DetailedEng({super.key, required this.cityName, required this.depoName});
+  String? userId;
+  DetailedEng(
+      {super.key, required this.cityName, required this.depoName, this.userId});
 
   @override
   State<DetailedEng> createState() => _DetailedEngtState();
@@ -50,22 +55,26 @@ class _DetailedEngtState extends State<DetailedEng>
   Stream? _stream2;
   var alldata;
   bool _isloading = true;
-  dynamic userId;
   TextEditingController selectedDepoController = TextEditingController();
 
   @override
   void initState() {
-    // getmonthlyReport();
-    // getmonthlyReportEv();
-    getUserId().whenComplete(() {
-      // DetailedProject = getmonthlyReport();
-      _detailedDataSource = DetailedEngSource(DetailedProject, context,
-          widget.cityName.toString(), widget.depoName.toString(), userId);
+    checkAvailableImage().whenComplete(() {
+      _detailedDataSource = DetailedEngSource(
+          DetailedProject,
+          context,
+          widget.cityName.toString(),
+          widget.depoName.toString(),
+          widget.userId!);
       _dataGridController = DataGridController();
 
       // DetailedProjectev = getmonthlyReportEv();
-      _detailedEngSourceev = DetailedEngSourceEV(DetailedProjectev, context,
-          widget.cityName.toString(), widget.depoName.toString(), userId);
+      _detailedEngSourceev = DetailedEngSourceEV(
+          DetailedProjectev,
+          context,
+          widget.cityName.toString(),
+          widget.depoName.toString(),
+          widget.userId!);
       _dataGridController = DataGridController();
 
       // DetailedProjectshed = getmonthlyReportEv();
@@ -74,7 +83,7 @@ class _DetailedEngtState extends State<DetailedEng>
           context,
           widget.cityName.toString(),
           widget.depoName.toString(),
-          userId);
+          widget.userId!);
       _dataGridController = DataGridController();
       _controller = TabController(length: 3, vsync: this);
 
@@ -82,21 +91,21 @@ class _DetailedEngtState extends State<DetailedEng>
           .collection('DetailEngineering')
           .doc('${widget.depoName}')
           .collection('RFC LAYOUT DRAWING')
-          .doc(userId)
+          .doc(widget.userId!)
           .snapshots();
 
       _stream1 = FirebaseFirestore.instance
           .collection('DetailEngineering')
           .doc('${widget.depoName}')
           .collection('EV LAYOUT DRAWING')
-          .doc(userId)
+          .doc(widget.userId!)
           .snapshots();
 
       _stream2 = FirebaseFirestore.instance
           .collection('DetailEngineering')
           .doc('${widget.depoName}')
           .collection('Shed LAYOUT DRAWING')
-          .doc(userId)
+          .doc(widget.userId!)
           .snapshots();
 
       _isloading = false;
@@ -207,7 +216,7 @@ class _DetailedEngtState extends State<DetailedEng>
                           ),
                           const SizedBox(width: 5),
                           Text(
-                            userId ?? '',
+                            widget.userId! ?? '',
                             style: const TextStyle(fontSize: 18),
                           )
                         ],
@@ -222,6 +231,13 @@ class _DetailedEngtState extends State<DetailedEng>
               labelColor: blue,
               onTap: (value) {
                 _selectedIndex = value;
+                _isloading = true;
+                setState(() {});
+                checkAvailableImage().whenComplete(() {
+                  setState(() {
+                    _isloading = false;
+                  });
+                });
               },
               tabs: const [
                 Tab(text: "RFC Drawings of Civil Activities"),
@@ -233,36 +249,13 @@ class _DetailedEngtState extends State<DetailedEng>
               height: 55,
               color: blue,
             )),
-
         body: TabBarView(children: [
           tabScreen(),
           tabScreen1(),
           tabScreen2(),
         ]),
-        // floatingActionButton: FloatingActionButton(
-        //   child: Icon(Icons.add),
-        //   onPressed: (() {
-        //     DetailedProject.add(DetailedEngModel(
-        //       siNo: 1,
-        //       title: 'EV Layout',
-        //       number: null,
-        //       preparationDate: DateFormat('dd-MM-yyyy') .format(DateTime.now()),
-        //       submissionDate: DateFormat('dd-MM-yyyy') .format(DateTime.now()),
-        //       approveDate: DateFormat('dd-MM-yyyy') .format(DateTime.now()),
-        //       releaseDate: DateFormat('dd-MM-yyyy') .format(DateTime.now()),
-        //     ));
-        //     _detailedDataSource.buildDataGridRows();
-        //     _detailedDataSource.updateDatagridSource();
-        //   }),
-        // ),
       ),
     );
-  }
-
-  Future<void> getUserId() async {
-    await AuthService().getCurrentUserId().then((value) {
-      userId = value;
-    });
   }
 
   void StoreData() {
@@ -290,7 +283,7 @@ class _DetailedEngtState extends State<DetailedEng>
         .collection('DetailEngineering')
         .doc('${widget.depoName}')
         .collection('RFC LAYOUT DRAWING')
-        .doc(userId)
+        .doc(widget.userId!)
         .set({
       'data': tabledata2,
     }).whenComplete(() {
@@ -313,7 +306,7 @@ class _DetailedEngtState extends State<DetailedEng>
           .collection('DetailEngineering')
           .doc('${widget.depoName}')
           .collection('EV LAYOUT DRAWING')
-          .doc(userId)
+          .doc(widget.userId!)
           .set({
         'data': ev_tabledatalist,
       }).whenComplete(() {
@@ -336,7 +329,7 @@ class _DetailedEngtState extends State<DetailedEng>
             .collection('DetailEngineering')
             .doc('${widget.depoName}')
             .collection('Shed LAYOUT DRAWING')
-            .doc(userId)
+            .doc(widget.userId!)
             .set({
           'data': shed_tabledatalist,
         }).whenComplete(() {
@@ -640,7 +633,7 @@ class _DetailedEngtState extends State<DetailedEng>
                               context,
                               widget.cityName.toString(),
                               widget.depoName.toString(),
-                              userId);
+                              widget.userId!);
                         });
                         _dataGridController = DataGridController();
 
@@ -832,6 +825,8 @@ class _DetailedEngtState extends State<DetailedEng>
               ]),
         floatingActionButton: FloatingActionButton(
           onPressed: (() {
+            globalIndexDetailedList.add(0);
+            isShowPinIconInDetail.add(false);
             DetailedProject.add(DetailedEngModel(
               siNo: 1,
               title: '',
@@ -1057,7 +1052,7 @@ class _DetailedEngtState extends State<DetailedEng>
                             context,
                             widget.cityName.toString(),
                             widget.depoName.toString(),
-                            userId);
+                            widget.userId!);
                         _dataGridController = DataGridController();
                       });
 
@@ -1250,6 +1245,8 @@ class _DetailedEngtState extends State<DetailedEng>
             ]),
       floatingActionButton: FloatingActionButton(
         onPressed: (() {
+          globalIndexDetailedList.add(0);
+          isShowPinIconInDetail.add(false);
           if (_selectedIndex == 0) {
             DetailedProjectev.add(DetailedEngModel(
               siNo: 1,
@@ -1491,7 +1488,7 @@ class _DetailedEngtState extends State<DetailedEng>
                               context,
                               widget.cityName.toString(),
                               widget.depoName.toString(),
-                              userId);
+                              widget.userId!);
                           _dataGridController = DataGridController();
                         });
 
@@ -1684,9 +1681,11 @@ class _DetailedEngtState extends State<DetailedEng>
               ]),
         floatingActionButton: FloatingActionButton(
           onPressed: (() {
+            globalIndexDetailedList.add(0);
+            isShowPinIconInDetail.add(false);
             DetailedProjectshed.add(DetailedEngModel(
               siNo: 1,
-              title: 'EV Layout',
+              title: 'Shed Lighting',
               number: null,
               preparationDate: DateFormat('dd-MM-yyyy').format(DateTime.now()),
               submissionDate: DateFormat('dd-MM-yyyy').format(DateTime.now()),
@@ -1740,6 +1739,11 @@ class _DetailedEngtState extends State<DetailedEng>
   }
 
   Future<void> checkAvailableImage() async {
+    List<dynamic> tempGlobalList = [];
+    List<bool> tempIsShowPinDetail = [];
+
+    int loopLen = 0;
+
     List<String> storageTitles = [
       'DetailedEngRFC',
       'DetailedEngEV',
@@ -1750,17 +1754,42 @@ class _DetailedEngtState extends State<DetailedEng>
         .collection('DetailEngineering')
         .doc(widget.depoName)
         .collection(tabNames[_selectedIndex])
-        .doc(userId)
+        .doc(widget.userId)
         .get();
 
-    Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+    if (documentSnapshot.exists) {
+      Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
 
-    List<dynamic> listLen = data['data'];
+      List<dynamic> mapDataList = data['data'];
 
-    for (int i = 0; i < listLen.length; i++) {
-      final storage = FirebaseStorage.instance
-          .ref()
-          .child('${storageTitles[_selectedIndex]}/');
+      loopLen = mapDataList.length;
+
+      for (int i = 0; i < loopLen; i++) {
+        String drawingNumber = '${mapDataList[i]['Number']}';
+
+        final storage = FirebaseStorage.instance;
+        final path =
+            '${storageTitles[_selectedIndex]}/${widget.cityName}/${widget.depoName}/${widget.userId}/$drawingNumber/${i + 1}';
+
+        ListResult result = await storage.ref().child(path).listAll();
+        if (result.items.isNotEmpty) {
+          tempIsShowPinDetail.add(true);
+        } else {
+          tempIsShowPinDetail.add(false);
+        }
+        tempGlobalList.add(result.items.length);
+      }
+      globalIndexDetailedList = tempGlobalList;
+      isShowPinIconInDetail = tempIsShowPinDetail;
+
+      print(' global index list : ${globalIndexDetailedList}');
     }
+
+    // for (int i = 0; i < listLen.length; i++) {
+    //   final storage = FirebaseStorage.instance
+    //       .ref()
+    //       .child('${storageTitles[_selectedIndex]}/');
+    // }
   }
 }

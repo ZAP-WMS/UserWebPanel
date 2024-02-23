@@ -2,6 +2,7 @@ import 'package:assingment/model/detailed_engModel.dart';
 import 'package:assingment/model/employee.dart';
 import 'package:assingment/KeysEvents/upload.dart';
 import 'package:assingment/model/monthly_projectModel.dart';
+import 'package:assingment/overview/detailed_Eng.dart';
 import 'package:assingment/widget/style.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -32,6 +33,7 @@ class DetailedEngSourceEV extends DataGridSource {
 
   @override
   List<DetailedEngModel> _detailedengev = [];
+
   // List<DetailedEngModel> _detailedeng = [];
 
   TextStyle textStyle = const TextStyle(
@@ -39,6 +41,7 @@ class DetailedEngSourceEV extends DataGridSource {
       fontWeight: FontWeight.w400,
       fontSize: 14,
       color: Colors.black87);
+
   List<String> typeRiskMenuItems = [
     'EV Layout',
     'Layout & Foundation Details for EV charging Depot',
@@ -225,77 +228,69 @@ class DetailedEngSourceEV extends DataGridSource {
                                     userId: userId,
                                     date: activitydata,
                                     fldrName:
-                                        row.getCells()[0].value.toString(),
+                                        '${dataGridRows.indexOf(row) + 1}',
                                   ),
                                 ));
                               }
-                              // showDialog(
-                              //     context: context,
-                              //     builder: (context) => AlertDialog(
-                              //         content: SizedBox(
-                              //             height: 100,
-                              //             child: Column(
-                              //               mainAxisAlignment:
-                              //                   MainAxisAlignment.spaceBetween,
-                              //               children: [
-                              //                 Text(
-                              //                     'Employee ID: ${row.getCells()[0].value.toString()}'),
-                              //                 Text(
-                              //                     'Employee Name: ${row.getCells()[1].value.toString()}'),
-                              //                 Text(
-                              //                     'Employee Designation: ${row.getCells()[2].value.toString()}'),
-                              //               ],
-                              //             ))));
                             },
                             child: const Text('Upload'));
                       })
                     : dataGridCell.columnName == 'ViewDrawing'
                         ? LayoutBuilder(builder:
                             (BuildContext context, BoxConstraints constraints) {
-                            return ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: blue),
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => ViewAllPdf(
-                                            title: 'DetailedEngEV',
-                                            cityName: cityName,
-                                            depoName: depoName,
-                                            userId: userId,
-                                            date: row
-                                                .getCells()[4]
-                                                .value
-                                                .toString(),
-                                            docId: row
-                                                .getCells()[0]
-                                                .value
-                                                .toString(),
-                                          )
-                                      // UploadDocument(
-                                      //     title: 'DetailedEngRFC',
-                                      //     cityName: cityName,
-                                      //     depoName: depoName,
-                                      //     activity: '${row.getCells()[1].value.toString()}'),
-                                      ));
-                                  // showDialog(
-                                  //     context: context,
-                                  //     builder: (context) => AlertDialog(
-                                  //         content: SizedBox(
-                                  //             height: 100,
-                                  //             child: Column(
-                                  //               mainAxisAlignment:
-                                  //                   MainAxisAlignment.spaceBetween,
-                                  //               children: [
-                                  //                 Text(
-                                  //                     'Employee ID: ${row.getCells()[0].value.toString()}'),
-                                  //                 Text(
-                                  //                     'Employee Name: ${row.getCells()[1].value.toString()}'),
-                                  //                 Text(
-                                  //                     'Employee Designation: ${row.getCells()[2].value.toString()}'),
-                                  //               ],
-                                  //             ))));
-                                },
-                                child: const Text('View'));
+                            return Row(
+                              children: [
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: blue),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (context) => ViewAllPdf(
+                                                    title: 'DetailedEngEV',
+                                                    cityName: cityName,
+                                                    depoName: depoName,
+                                                    userId: userId,
+                                                    date: row
+                                                        .getCells()[4]
+                                                        .value
+                                                        .toString(),
+                                                    docId:
+                                                        '${dataGridRows.indexOf(row) + 1}',
+                                                  )));
+                                    },
+                                    child: const Text('View')),
+                                Container(
+                                  child: isShowPinIconInDetail[
+                                          dataGridRows.indexOf(row) + 1 >
+                                                  isShowPinIconInDetail.length
+                                              ? 0
+                                              : dataGridRows.indexOf(row)]
+                                      ? Icon(
+                                          Icons.attach_file_outlined,
+                                          color: blue,
+                                          size: 18,
+                                        )
+                                      : Container(),
+                                ),
+                                Text(
+                                  globalIndexDetailedList[dataGridRows
+                                                          .indexOf(row) +
+                                                      1 >
+                                                  globalIndexDetailedList.length
+                                              ? 0
+                                              : dataGridRows.indexOf(row)] !=
+                                          0
+                                      ? globalIndexDetailedList[
+                                                  dataGridRows.indexOf(row)] >
+                                              9
+                                          ? '${globalIndexDetailedList[dataGridRows.indexOf(row)]}+'
+                                          : '${globalIndexDetailedList[dataGridRows.indexOf(row)]}'
+                                      : '',
+                                  style: TextStyle(color: blue, fontSize: 11),
+                                )
+                              ],
+                            );
                           })
                         : dataGridCell.columnName == 'Number' &&
                                 dataGridCell.value == 0

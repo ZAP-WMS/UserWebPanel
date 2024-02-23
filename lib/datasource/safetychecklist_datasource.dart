@@ -1,5 +1,7 @@
 import 'package:assingment/KeysEvents/view_AllFiles.dart';
+import 'package:assingment/Planning_Pages/safety_checklist.dart';
 import 'package:assingment/model/safety_checklistModel.dart';
+import 'package:assingment/widget/style.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -101,7 +103,7 @@ class SafetyChecklistDataSource extends DataGridSource {
                               ],
                               cityName: cityName,
                               depoName: depoName,
-                              fldrName: row.getCells()[0].value.toString(),
+                              fldrName: '${dataGridRows.indexOf(row) + 1}',
                               userId: userId,
                               date: selectedDate,
                             ),
@@ -114,25 +116,49 @@ class SafetyChecklistDataSource extends DataGridSource {
                   ? LayoutBuilder(
                       builder:
                           (BuildContext context, BoxConstraints constraints) {
-                        return ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ViewAllPdf(
+                        return Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewAllPdf(
                                       title: 'SafetyChecklist',
                                       cityName: cityName,
                                       depoName: depoName,
                                       userId: userId,
                                       date: selectedDate,
-                                      docId:
-                                          row.getCells()[0].value.toString())));
-                              //     // ViewFile()
-                              //     // UploadDocument(
-                              //     //     title: 'SafetyChecklist',
-                              //     //     activity:
-                              //     //         '${row.getCells()[1].value.toString()}'),
-                              //     ));
-                            },
-                            child: const Text('View'));
+                                      docId: '${dataGridRows.indexOf(row) + 1}',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Text('View'),
+                            ),
+                            Container(
+                              child:
+                                  isShowPinSafetyList[dataGridRows.indexOf(row)]
+                                      ? Icon(
+                                          Icons.attach_file_outlined,
+                                          color: blue,
+                                          size: 18,
+                                        )
+                                      : Container(),
+                            ),
+                            Text(
+                              globalIndexSafetyList[
+                                          dataGridRows.indexOf(row)] !=
+                                      0
+                                  ? globalIndexSafetyList[
+                                              dataGridRows.indexOf(row)] >
+                                          9
+                                      ? '${globalIndexSafetyList[dataGridRows.indexOf(row)]}+'
+                                      : '${globalIndexSafetyList[dataGridRows.indexOf(row)]}'
+                                  : '',
+                              style: TextStyle(color: blue, fontSize: 11),
+                            )
+                          ],
+                        );
                       },
                     )
                   : dataGridCell.columnName == 'Status'

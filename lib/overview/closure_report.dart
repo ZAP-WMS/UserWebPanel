@@ -1,6 +1,7 @@
 import 'package:assingment/Authentication/auth_service.dart';
 import 'package:assingment/widget/custom_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -9,10 +10,14 @@ import '../datasource/closereport_datasource.dart';
 import '../model/close_report.dart';
 import '../widget/style.dart';
 
+List<dynamic> globalIndexClosureList = [];
+List<bool> isShowPinClosureList = [];
+
 class ClosureReport extends StatefulWidget {
   String? cityName;
   String? depoName;
-  ClosureReport({super.key, this.cityName, this.depoName});
+  String? userId;
+  ClosureReport({super.key, this.cityName, this.depoName, this.userId});
 
   @override
   State<ClosureReport> createState() => _ClosureReportState();
@@ -27,24 +32,22 @@ class _ClosureReportState extends State<ClosureReport> {
   String? depotname, state;
   var buses;
   var longitude, latitude, loa;
-  dynamic userId;
-  bool _isUserId = false;
   bool _isloading = true;
   List<dynamic> tabledata2 = [];
 
   @override
   void initState() {
     // _fetchClosureField();
-    getUserId().whenComplete(() {
+    checkAvailableImage().whenComplete(() {
       closereport = getcloseReport();
-      _closeReportDataSource = CloseReportDataSource(
-          closereport, context, widget.depoName!, widget.cityName!, userId);
+      _closeReportDataSource = CloseReportDataSource(closereport, context,
+          widget.depoName!, widget.cityName!, widget.userId);
       _dataGridController = DataGridController();
       _stream = FirebaseFirestore.instance
           .collection('ClosureReport')
           .doc('${widget.depoName}')
           .collection('userId')
-          .doc(userId)
+          .doc(widget.userId)
           .snapshots();
 
       _isloading = false;
@@ -71,7 +74,7 @@ class _ClosureReportState extends State<ClosureReport> {
                     .collection('ClosureReport')
                     .doc('${widget.depoName}')
                     .collection("userId")
-                    .doc(userId)
+                    .doc(widget.userId)
                     .set(
                   {
                     'DepotName': depotname ?? 'Enter Depot Name',
@@ -90,19 +93,13 @@ class _ClosureReportState extends State<ClosureReport> {
         body: _isloading ? LoadingPage() : upperScreen());
   }
 
-  Future<void> getUserId() async {
-    await AuthService().getCurrentUserId().then((value) {
-      userId = value;
-    });
-  }
-
   upperScreen() {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('ClosureReport')
           .doc('${widget.depoName}')
           .collection("userId")
-          .doc(userId)
+          .doc(widget.userId)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -827,7 +824,7 @@ class _ClosureReportState extends State<ClosureReport> {
         .collection('ClosureReportTable')
         .doc(widget.depoName!)
         .collection('userId')
-        .doc(userId)
+        .doc(widget.userId)
         // .collection(userId)
         // .doc(DateFormat.yMMMMd().format(DateTime.now()))
         .set(
@@ -841,5 +838,54 @@ class _ClosureReportState extends State<ClosureReport> {
         backgroundColor: blue,
       ));
     });
+  }
+
+  Future<void> checkAvailableImage() async {
+    List<dynamic> tempGlobalList = [];
+    List<bool> tempIsShowPinDetail = [];
+
+    int loopLen = 0;
+
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('ClosureReportTable')
+        .doc(widget.depoName)
+        .collection('userId')
+        .doc(widget.userId)
+        .get();
+
+    if (documentSnapshot.exists) {
+      Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
+
+      List<dynamic> mapDataList = data['data'];
+
+      loopLen = mapDataList.length;
+
+      for (int i = 0; i < loopLen; i++) {
+        final storage = FirebaseStorage.instance;
+
+        final path =
+            'ClosureReport/${widget.cityName}/${widget.depoName}/${widget.userId}/${i + 1}';
+
+        ListResult result = await storage.ref().child(path).listAll();
+
+        if (result.items.isNotEmpty) {
+          tempIsShowPinDetail.add(true);
+        } else {
+          tempIsShowPinDetail.add(false);
+        }
+        print('item result list - ${result.items.length}');
+        tempGlobalList.add(result.items.length);
+      }
+      globalIndexClosureList = tempGlobalList;
+      isShowPinClosureList = tempIsShowPinDetail;
+    } else {
+      for (int i = 0; i < 7; i++) {
+        tempGlobalList.add(0);
+        tempIsShowPinDetail.add(false);
+      }
+      globalIndexClosureList = tempGlobalList;
+      isShowPinClosureList = tempIsShowPinDetail;
+    }
   }
 }

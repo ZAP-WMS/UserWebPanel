@@ -1,4 +1,5 @@
 import 'package:assingment/model/close_report.dart';
+import 'package:assingment/overview/closure_report.dart';
 import 'package:assingment/widget/style.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -62,135 +63,61 @@ class CloseReportDataSource extends DataGridSource {
                             customizetype: const ['pdf'],
                             cityName: cityName,
                             depoName: depoName,
-                            fldrName: row.getCells()[0].value.toString(),
+                            fldrName: '${dataGridRows.indexOf(row) + 1}',
                             userId: userId,
                             // pagetitle: Pagetitle,
                           ),
                         ));
-                        // showDialog(
-                        //     context: context,
-                        //     builder: (context) => AlertDialog(
-                        //         content: SizedBox(
-                        //             height: 100,
-                        //             child: Column(
-                        //               mainAxisAlignment:
-                        //                   MainAxisAlignment.spaceBetween,
-                        //               children: [
-                        //                 Text(
-                        //                     'Employee ID: ${row.getCells()[0].value.toString()}'),
-                        //                 Text(
-                        //                     'Employee Name: ${row.getCells()[1].value.toString()}'),
-                        //                 Text(
-                        //                     'Employee Designation: ${row.getCells()[2].value.toString()}'),
-                        //               ],
-                        //             ))));
                       },
                       child: const Text('Upload'));
                 })
               : dataGridCell.columnName == 'View'
                   ? LayoutBuilder(builder:
                       (BuildContext context, BoxConstraints constraints) {
-                      return ElevatedButton(
-                          style:
-                              ElevatedButton.styleFrom(backgroundColor: blue),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ViewAllPdf(
-                                    title: 'ClosureReport',
-                                    cityName: cityName,
-                                    depoName: depoName,
-                                    userId: userId,
-                                    docId: row.getCells()[0].value.toString())
-                                // UploadDocument(
-                                //     title: 'DetailedEngRFC',
-                                //     cityName: cityName,
-                                //     depoName: depoName,
-                                //     activity: '${row.getCells()[1].value.toString()}'),
-                                ));
-                            // showDialog(
-                            //     context: context,
-                            //     builder: (context) => AlertDialog(
-                            //         content: SizedBox(
-                            //             height: 100,
-                            //             child: Column(
-                            //               mainAxisAlignment:
-                            //                   MainAxisAlignment.spaceBetween,
-                            //               children: [
-                            //                 Text(
-                            //                     'Employee ID: ${row.getCells()[0].value.toString()}'),
-                            //                 Text(
-                            //                     'Employee Name: ${row.getCells()[1].value.toString()}'),
-                            //                 Text(
-                            //                     'Employee Designation: ${row.getCells()[2].value.toString()}'),
-                            //               ],
-                            //             ))));
-                          },
-                          child: const Text('View'));
+                      return Row(
+                        children: [
+                          ElevatedButton(
+                            style:
+                                ElevatedButton.styleFrom(backgroundColor: blue),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ViewAllPdf(
+                                      title: 'ClosureReport',
+                                      cityName: cityName,
+                                      depoName: depoName,
+                                      userId: userId,
+                                      docId:
+                                          '${dataGridRows.indexOf(row) + 1}'),
+                                ),
+                              );
+                            },
+                            child: const Text('View'),
+                          ),
+                          Container(
+                            child:
+                                isShowPinClosureList[dataGridRows.indexOf(row)]
+                                    ? Icon(
+                                        Icons.attach_file_outlined,
+                                        color: blue,
+                                        size: 18,
+                                      )
+                                    : Container(),
+                          ),
+                          Text(
+                            globalIndexClosureList[dataGridRows.indexOf(row)] !=
+                                    0
+                                ? globalIndexClosureList[
+                                            dataGridRows.indexOf(row)] >
+                                        9
+                                    ? '${globalIndexClosureList[dataGridRows.indexOf(row)]}+'
+                                    : '${globalIndexClosureList[dataGridRows.indexOf(row)]}'
+                                : '',
+                            style: TextStyle(color: blue, fontSize: 11),
+                          )
+                        ],
+                      );
                     })
-                  // : (dataGridCell.columnName == 'Date')
-                  //     ? Row(
-                  //         children: [
-                  //           IconButton(
-                  //             onPressed: () {
-                  //               showDialog(
-                  //                   context: mainContext,
-                  //                   builder: (context) => AlertDialog(
-                  //                         title: const Text('All Date'),
-                  //                         content: SizedBox(
-                  //                             height: 400,
-                  //                             width: 500,
-                  //                             child: SfDateRangePicker(
-                  //                               view: DateRangePickerView.month,
-                  //                               showTodayButton: true,
-                  //                               onSelectionChanged:
-                  //                                   (DateRangePickerSelectionChangedArgs
-                  //                                       args) {
-                  //                                 if (args.value
-                  //                                     is PickerDateRange) {
-                  //                                   rangeEndDate =
-                  //                                       args.value.endDate;
-                  //                                 } else {
-                  //                                   final List<PickerDateRange>
-                  //                                       selectedRanges = args.value;
-                  //                                 }
-                  //                               },
-                  //                               selectionMode:
-                  //                                   DateRangePickerSelectionMode
-                  //                                       .single,
-                  //                               showActionButtons: true,
-                  //                               onSubmit: ((value) {
-                  //                                 date = DateTime.parse(
-                  //                                     value.toString());
-
-                  //                                 final int dataRowIndex =
-                  //                                     dataGridRows.indexOf(row);
-                  //                                 if (dataRowIndex != null) {
-                  //                                   final int dataRowIndex =
-                  //                                       dataGridRows.indexOf(row);
-                  //                                   dataGridRows[dataRowIndex]
-                  //                                           .getCells()[1] =
-                  //                                       DataGridCell<String>(
-                  //                                           columnName: 'Date',
-                  //                                           value: DateFormat(
-                  //                                                   'dd-MM-yyyy')
-                  //                                               .format(date!));
-                  //                                   _montlyproject[dataRowIndex]
-                  //                                           .date =
-                  //                                       DateFormat('dd-MM-yyyy')
-                  //                                           .format(date!);
-                  //                                   notifyListeners();
-
-                  //                                   Navigator.pop(context);
-                  //                                 }
-                  //                               }),
-                  //                             )),
-                  //                       ));
-                  //             },
-                  //             icon: const Icon(Icons.calendar_today),
-                  //           ),
-                  //           Text(dataGridCell.value.toString()),
-                  //         ],
-                  //       )
                   : Text(
                       dataGridCell.value.toString(),
                       textAlign: TextAlign.center,

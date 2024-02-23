@@ -1,7 +1,9 @@
+import 'package:assingment/Planning_Pages/civil_quality_checklist.dart';
 import 'package:assingment/Planning_Pages/summary.dart';
 import 'package:assingment/model/safety_checklistModel.dart';
 import 'package:assingment/widget/custom_appbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -13,11 +15,16 @@ import '../components/loading_page.dart';
 import '../datasource/safetychecklist_datasource.dart';
 import '../widget/style.dart';
 
+List<dynamic> globalIndexSafetyList = [];
+List<dynamic> isShowPinSafetyList = [];
+
 class SafetyChecklist extends StatefulWidget {
   String? cityName;
   String? depoName;
+  String? userId;
 
-  SafetyChecklist({super.key, required this.cityName, required this.depoName});
+  SafetyChecklist(
+      {super.key, required this.cityName, required this.depoName, this.userId});
 
   @override
   State<SafetyChecklist> createState() => _SafetyChecklistState();
@@ -29,7 +36,7 @@ late DataGridController _dataGridController;
 List<dynamic> tabledata2 = [];
 Stream? _stream;
 dynamic alldata;
-dynamic userId;
+
 bool _isloading = true;
 // ignore: prefer_typing_uninitialized_variables
 dynamic depotlocation,
@@ -49,24 +56,25 @@ DateTime? date2 = DateTime.now();
 class _SafetyChecklistState extends State<SafetyChecklist> {
   @override
   void initState() {
-    // _fetchSafetyField();
-    getUserId().whenComplete(() {
+    checkAvailableImage().whenComplete(() {
       safetylisttable = getData();
       _safetyChecklistDataSource = SafetyChecklistDataSource(
-          safetylisttable, widget.cityName!, widget.depoName!, userId);
+          safetylisttable, widget.cityName!, widget.depoName!, widget.userId);
       _dataGridController = DataGridController();
 
       _stream = FirebaseFirestore.instance
           .collection('SafetyChecklistTable2')
           .doc(widget.depoName!)
           .collection('userId')
-          .doc(userId)
+          .doc(widget.userId)
           .collection('date')
           .doc(DateFormat.yMMMMd().format(DateTime.now()))
           .snapshots();
 
       _isloading = false;
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
 
     super.initState();
@@ -90,7 +98,7 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
                     cityName: widget.cityName.toString(),
                     depoName: widget.depoName.toString(),
                     id: 'Safety Checklist Report',
-                    userId: userId,
+                    userId: widget.userId,
                   ),
                 )),
             haveSynced: true,
@@ -99,7 +107,7 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
                   .collection('SafetyFieldData2')
                   .doc('${widget.depoName}')
                   .collection('userId')
-                  .doc(userId)
+                  .doc(widget.userId)
                   .collection('date')
                   .doc(DateFormat.yMMMMd().format(DateTime.now()))
                   .set({
@@ -118,8 +126,8 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
                 'BoardingDate': date2,
               });
 
-              FirebaseApi().nestedKeyEventsField(
-                  'SafetyFieldData2', widget.depoName!, 'userId', userId);
+              FirebaseApi().nestedKeyEventsField('SafetyFieldData2',
+                  widget.depoName!, 'userId', widget.userId!);
 
               store();
             }),
@@ -132,7 +140,7 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
                   .collection('SafetyFieldData2')
                   .doc('${widget.depoName}')
                   .collection('userId')
-                  .doc(userId)
+                  .doc(widget.userId)
                   .collection('date')
                   .doc(DateFormat.yMMMMd().format(DateTime.now()))
                   .snapshots(),
@@ -1056,7 +1064,7 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
                                     GridColumn(
                                       columnName: 'ViewPhoto',
                                       allowEditing: false,
-                                      width: 180,
+                                      width: 110,
                                       label: Container(
                                         alignment: Alignment.center,
                                         child: Text('View Photo',
@@ -1082,7 +1090,7 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
                                         safetylisttable,
                                         widget.cityName!,
                                         widget.depoName!,
-                                        userId);
+                                        widget.userId);
                                 _dataGridController = DataGridController();
                               });
                               return SfDataGridTheme(
@@ -1185,7 +1193,7 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
                                     GridColumn(
                                       columnName: 'ViewPhoto',
                                       allowEditing: false,
-                                      width: 180,
+                                      width: 110,
                                       label: Container(
                                         alignment: Alignment.center,
                                         child: Text('View Photo',
@@ -1212,12 +1220,6 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
     );
   }
 
-  Future<void> getUserId() async {
-    await AuthService().getCurrentUserId().then((value) {
-      userId = value;
-    });
-  }
-
   void store() {
     Map<String, dynamic> table_data = Map();
     for (var i in _safetyChecklistDataSource.dataGridRows) {
@@ -1225,7 +1227,7 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
         if (data.columnName != 'Photo' && data.columnName != 'ViewPhoto') {
           table_data[data.columnName] = data.value;
         }
-        table_data['User ID'] = userId;
+        table_data['User ID'] = widget.userId;
       }
 
       tabledata2.add(table_data);
@@ -1236,7 +1238,7 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
         .collection('SafetyChecklistTable2')
         .doc(widget.depoName!)
         .collection('userId')
-        .doc(userId)
+        .doc(widget.userId)
         .collection('date')
         .doc(DateFormat.yMMMMd().format(DateTime.now()))
         .set(
@@ -1244,7 +1246,7 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
       SetOptions(merge: true),
     ).whenComplete(() {
       FirebaseApi().nestedKeyEventsField(
-          'SafetyChecklistTable2', widget.depoName!, 'userId', userId);
+          'SafetyChecklistTable2', widget.depoName!, 'userId', widget.userId!);
       tabledata2.clear();
       // Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -1571,27 +1573,55 @@ class _SafetyChecklistState extends State<SafetyChecklist> {
     ];
   }
 
-  // void _fetchSafetyField() async {
-  //   await FirebaseFirestore.instance
-  //       .collection('SafetyFieldData2')
-  //       .doc('${widget.depoName}')
-  //       .collection(userId)
-  //       .doc(DateFormat.yMMMMd().format(DateTime.now()))
-  //       .get()
-  //       .then((ds) {
-  //     setState(() {
-  //       tpNo = ds.data()!['TPNo'] ?? '';
-  //       rev = ds.data()!['Rev'] ?? '';
-  //       date = ds.data()!['InstallationDate'] ?? '';
-  //       date1 = ds.data()!['EnegizationDate'] ?? '';
-  //       date2 = ds.data()!['BoardingDate'] ?? '';
-  //       depotname = ds.data()!['DepotName'] ?? '';
-  //       address = ds.data()!['address'] ?? '';
-  //       latitude = ds.data()!['Latitude'] ?? '';
-  //       state = ds.data()!['State'] ?? '';
-  //       chargertype = ds.data()!['ChargerType'] ?? '';
-  //       conductedby = ds.data()!['ConductedBy'] ?? '';
-  //     });
-  //   });
-  // }
+  Future<void> checkAvailableImage() async {
+    List<dynamic> tempGlobalList = [];
+    List<bool> tempIsShowPinDetail = [];
+    final todayDate = DateFormat('MMMM dd, yyyy').format(currentDate);
+
+    int loopLen = 0;
+
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('SafetyChecklistTable2')
+        .doc(widget.depoName)
+        .collection('userId')
+        .doc(widget.userId)
+        .collection('date')
+        .doc(todayDate)
+        .get();
+
+    if (documentSnapshot.exists) {
+      Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
+
+      List<dynamic> mapDataList = data['data'];
+
+      loopLen = mapDataList.length;
+
+      for (int i = 0; i < loopLen; i++) {
+        final storage = FirebaseStorage.instance;
+
+        final path =
+            'SafetyChecklist/${widget.cityName}/${widget.depoName}/${widget.userId}/$todayDate/${i + 1}';
+
+        ListResult result = await storage.ref().child(path).listAll();
+
+        if (result.items.isNotEmpty) {
+          tempIsShowPinDetail.add(true);
+        } else {
+          tempIsShowPinDetail.add(false);
+        }
+        print('item result list - ${result.items.length}');
+        tempGlobalList.add(result.items.length);
+      }
+      globalIndexSafetyList = tempGlobalList;
+      isShowPinSafetyList = tempIsShowPinDetail;
+    } else {
+      for (int i = 0; i < 40; i++) {
+        tempGlobalList.add(0);
+        tempIsShowPinDetail.add(false);
+      }
+      globalIndexSafetyList = tempGlobalList;
+      isShowPinSafetyList = tempIsShowPinDetail;
+    }
+  }
 }

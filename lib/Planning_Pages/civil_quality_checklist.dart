@@ -901,7 +901,7 @@ class _CivilQualityChecklistState extends State<CivilQualityChecklist> {
                                     columnName: 'Upload',
                                     allowEditing: false,
                                     visible: true,
-                                    width: 150,
+                                    width: 110,
                                     label: Container(
                                       alignment: Alignment.center,
                                       child: Text('Upload',
@@ -915,7 +915,7 @@ class _CivilQualityChecklistState extends State<CivilQualityChecklist> {
                                   GridColumn(
                                     columnName: 'View',
                                     allowEditing: true,
-                                    width: 150,
+                                    width: 130,
                                     label: Container(
                                       alignment: Alignment.center,
                                       child: Text('View',
@@ -1078,7 +1078,7 @@ class _CivilQualityChecklistState extends State<CivilQualityChecklist> {
                               columnName: 'Upload',
                               allowEditing: false,
                               visible: true,
-                              width: 150,
+                              width: 110,
                               label: Container(
                                 alignment: Alignment.center,
                                 child: Text('Upload.',
@@ -1092,7 +1092,7 @@ class _CivilQualityChecklistState extends State<CivilQualityChecklist> {
                             GridColumn(
                               columnName: 'View',
                               allowEditing: true,
-                              width: 150,
+                              width: 130,
                               label: Container(
                                 alignment: Alignment.center,
                                 child: Text('View',

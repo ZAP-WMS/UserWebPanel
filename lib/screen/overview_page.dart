@@ -96,30 +96,38 @@ class _OverviewPageState extends State<OverviewPage> {
         cityName: widget.cityName,
         depoName: widget.depoName,
       ),
+
       KeyEvents2(
         depoName: widget.depoName,
         cityName: widget.cityName,
       ),
+
       MaterialProcurement(
         cityName: widget.cityName,
         depoName: widget.depoName,
       ),
+
       // ResourceAllocation(
       //   depoName: widget.depoName,
       //   cityName: widget.cityName,
       // ),
+
       DailyProject(
         depoName: widget.depoName,
         cityName: widget.cityName,
       ),
+
       MonthlyProject(
         depoName: widget.depoName,
         cityName: widget.cityName,
       ),
+
       DetailedEng(
+        userId: userId,
         cityName: widget.cityName,
         depoName: widget.depoName,
       ),
+
       // PlanningPage(
       //   cityName: widget.cityName,
       //   depoName: widget.depoName,
@@ -129,32 +137,31 @@ class _OverviewPageState extends State<OverviewPage> {
         cityName: widget.cityName,
         depoName: widget.depoName,
       ),
+
       SafetyChecklist(
+        userId: userId,
         cityName: widget.cityName,
         depoName: widget.depoName,
       ),
+
       QualityChecklist(
         cityName: widget.cityName,
         depoName: widget.depoName,
       ),
-      // KeyEvents(
-      //   depoName: widget.depoName,
-      //   cityName: widget.depoName,
-      // ),
+
       UploadDocument(
           cityName: widget.cityName,
           depoName: widget.depoName,
           userId: userId,
           pagetitle: 'Overview Page',
           fldrName: userId),
-      // TestingReport(
-      //   cityName: widget.cityName,
-      //   depoName: widget.depoName,
-      // ),
+
       ClosureReport(
+        userId: userId,
         cityName: widget.cityName,
         depoName: widget.depoName,
       ),
+
       EnergyManagement(
         cityName: widget.cityName,
         depoName: widget.depoName,
