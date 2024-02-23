@@ -22,7 +22,6 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:table_calendar/table_calendar.dart';
 import '../Authentication/auth_service.dart';
 import '../components/loading_page.dart';
 import '../datasource/dailyproject_datasource.dart';
@@ -36,6 +35,7 @@ import '../widget/date_input_format.dart';
 import '../widget/nodata_available.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:path/path.dart' as path;
 import 'dart:html' as html;
 
 class ViewSummary extends StatefulWidget {
@@ -89,6 +89,7 @@ class _ViewSummaryState extends State<ViewSummary> {
   dynamic userId;
   ProgressDialog? pr;
   String url = '';
+  bool sendReport = true;
   CheckboxProvider? _checkboxProvider;
   List<int> pdfData = [];
   String? pdfPath;
@@ -146,8 +147,6 @@ class _ViewSummaryState extends State<ViewSummary> {
       'February 24, 2024',
       'March 24, 2024',
       'April 24, 2024',
-      'March 24, 2024',
-      'April 24, 2024',
       'May 24, 2024',
       'June 24, 2024',
       'July 24, 2024',
@@ -178,6 +177,9 @@ class _ViewSummaryState extends State<ViewSummary> {
           preferredSize: const Size.fromHeight(50),
           child: CustomAppBar(
               sendEmail: () {
+                setState(() {
+                  sendReport = false;
+                });
                 _showCheckboxDialog(
                     context, _checkboxProvider!, widget.depoName!);
               },
@@ -487,7 +489,8 @@ class _ViewSummaryState extends State<ViewSummary> {
                                                           //     'Type a fruit...',
                                                           ),
                                                   onSubmitted: (value) {
-                                                    if (_formkey.currentState!
+                                                    if (_formkeyenddate
+                                                        .currentState!
                                                         .validate()) {
                                                       DateInputFormatter(
                                                           _dateRegExp);
@@ -2356,13 +2359,16 @@ class _ViewSummaryState extends State<ViewSummary> {
     pdfPath = 'DemandEnergyReport.pdf';
 
     // Save the PDF file to device storage
-    if (kIsWeb) {
-      html.AnchorElement(
-          href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath!)
-        ..click();
-    } else {
-      const Text('Sorry it is not ready for mobile platform');
+    if (sendReport) {
+      if (kIsWeb) {
+        html.AnchorElement(
+            href:
+                "data:application/octet-stream;base64,${base64Encode(pdfData)}")
+          ..setAttribute("download", pdfPath!)
+          ..click();
+      } else {
+        const Text('Sorry it is not ready for mobile platform');
+      }
     }
     uploadPdf(pdfData, pdfPath!);
     pr!.hide();
@@ -2702,11 +2708,14 @@ class _ViewSummaryState extends State<ViewSummary> {
     pdfPath = 'Daily Report.pdf';
 
     // Save the PDF file to device storage
-    if (kIsWeb) {
-      html.AnchorElement(
-          href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath!)
-        ..click();
+    if (sendReport) {
+      if (kIsWeb) {
+        html.AnchorElement(
+            href:
+                "data:application/octet-stream;base64,${base64Encode(pdfData)}")
+          ..setAttribute("download", pdfPath!)
+          ..click();
+      }
     }
     uploadPdf(pdfData, pdfPath!);
     pr!.hide();
@@ -3016,13 +3025,16 @@ class _ViewSummaryState extends State<ViewSummary> {
     pdfPath = 'SafetyReport.pdf';
 
     // Save the PDF file to device storage
-    if (kIsWeb) {
-      html.AnchorElement(
-          href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath!)
-        ..click();
-    } else {
-      const Text('Sorry it is not ready for mobile platform');
+    if (sendReport) {
+      if (kIsWeb) {
+        html.AnchorElement(
+            href:
+                "data:application/octet-stream;base64,${base64Encode(pdfData)}")
+          ..setAttribute("download", pdfPath!)
+          ..click();
+      } else {
+        const Text('Sorry it is not ready for mobile platform');
+      }
     }
     uploadPdf(pdfData, pdfPath!);
     pr!.hide();
@@ -3238,13 +3250,16 @@ class _ViewSummaryState extends State<ViewSummary> {
     pdfPath = 'MonthlyReport.pdf';
 
     // Save the PDF file to device storage
-    if (kIsWeb) {
-      html.AnchorElement(
-          href: "data:application/octet-stream;base64,${base64Encode(pdfData)}")
-        ..setAttribute("download", pdfPath!)
-        ..click();
-    } else {
-      const Text('Sorry it is not ready for mobile platform');
+    if (sendReport) {
+      if (kIsWeb) {
+        html.AnchorElement(
+            href:
+                "data:application/octet-stream;base64,${base64Encode(pdfData)}")
+          ..setAttribute("download", pdfPath!)
+          ..click();
+      } else {
+        const Text('Sorry it is not ready for mobile platform');
+      }
     }
     uploadPdf(pdfData, pdfPath!);
     pr!.hide();
@@ -3467,15 +3482,6 @@ class _ViewSummaryState extends State<ViewSummary> {
                                       checkboxProvider.ccValue);
                                 });
 
-                      // sendEmail(
-                      //     'Daily Project Details of $depoName'
-                      //         .split('+')
-                      //         .join(' '),
-                      //     'hiii amirr how are you'.split('+').join(' '),
-                      //     'https://firebasestorage.googleapis.com/v0/b/tp-zap-solz.appspot.com/o/Downloaded%20File%2FDaily%20Report.pdf?alt=media&token=8c8918b5-d0f7-4fc0-8681-21d812634f1a',
-                      //     checkboxProvider.toValue,
-                      //     checkboxProvider.ccValue);
-
                       Navigator.of(context).pop();
                     },
                     child: const Text('Send'),
@@ -3519,7 +3525,7 @@ class _ViewSummaryState extends State<ViewSummary> {
   sendEmail(String subject, String body, String attachmentUrl,
       List<String> toRecipients, List<String> ccRecipients) {
     // Construct the mailto URL
-
+    // String filePath = path.url.basename(attachmentUrl);
     String encodedSubject = Uri.decodeComponent(subject);
     String encodedBody = Uri.decodeComponent(body);
     // String encodedAttachmentUrl = attachmentUrl;

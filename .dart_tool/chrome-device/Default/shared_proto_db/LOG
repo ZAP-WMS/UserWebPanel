@@ -1,20 +1,14 @@
-2024/02/22-18:38:51.012 1f9c Reusing MANIFEST C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.becefb9f\flutter_tools_chrome_device.5a300617\Default\shared_proto_db/MANIFEST-000001
-2024/02/22-18:38:51.013 1f9c Recovering log #16
-2024/02/22-18:38:51.014 1f9c Reusing old log C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.becefb9f\flutter_tools_chrome_device.5a300617\Default\shared_proto_db/000016.log 
-2024/02/22-18:38:51.015 1f9c Delete type=0 #3
-2024/02/22-18:38:51.015 1f9c Delete type=0 #4
-2024/02/22-18:38:51.015 1f9c Delete type=0 #7
-2024/02/22-18:38:51.015 1f9c Delete type=0 #10
-2024/02/22-18:38:51.015 1f9c Delete type=0 #13
-2024/02/22-18:39:03.322 22c Level-0 table #20: started
-2024/02/22-18:39:03.330 22c Level-0 table #20: 220786 bytes OK
-2024/02/22-18:39:03.332 22c Delete type=0 #16
-2024/02/22-18:39:03.333 2070 Compacting 4@0 + 1@1 files
-2024/02/22-18:39:03.339 2070 Generated table #21@0: 643 keys, 80365 bytes
-2024/02/22-18:39:03.339 2070 Compacted 4@0 + 1@1 files => 80365 bytes
-2024/02/22-18:39:03.340 2070 compacted to: files[ 0 1 1 0 0 0 0 ]
-2024/02/22-18:39:03.340 2070 Delete type=2 #8
-2024/02/22-18:39:03.340 2070 Delete type=2 #11
-2024/02/22-18:39:03.341 2070 Delete type=2 #14
-2024/02/22-18:39:03.341 2070 Delete type=2 #17
-2024/02/22-18:39:03.341 2070 Delete type=2 #20
+2024/02/23-12:20:24.626 2a4c Reusing MANIFEST C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.27b38d78\flutter_tools_chrome_device.6e7873d9\Default\shared_proto_db/MANIFEST-000001
+2024/02/23-12:20:24.627 2a4c Recovering log #23
+2024/02/23-12:20:24.628 2a4c Reusing old log C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.27b38d78\flutter_tools_chrome_device.6e7873d9\Default\shared_proto_db/000023.log 
+2024/02/23-12:20:24.628 2a4c Delete type=0 #3
+2024/02/23-12:20:24.629 2a4c Delete type=0 #4
+2024/02/23-12:20:24.629 2a4c Delete type=0 #7
+2024/02/23-12:20:24.629 2a4c Delete type=2 #8
+2024/02/23-12:20:24.629 2a4c Delete type=0 #10
+2024/02/23-12:20:24.629 2a4c Delete type=2 #11
+2024/02/23-12:20:24.629 2a4c Delete type=0 #13
+2024/02/23-12:20:24.629 2a4c Delete type=2 #14
+2024/02/23-12:20:24.629 2a4c Delete type=0 #16
+2024/02/23-12:20:24.629 2a4c Delete type=2 #17
+2024/02/23-12:20:24.630 2a4c Delete type=0 #19

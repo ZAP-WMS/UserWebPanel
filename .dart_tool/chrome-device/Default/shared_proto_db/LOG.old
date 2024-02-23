@@ -1,8 +1,16 @@
-2024/02/22-18:30:39.999 704 Reusing MANIFEST C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.15812404\flutter_tools_chrome_device.3bc4f298\Default\shared_proto_db/MANIFEST-000001
-2024/02/22-18:30:40.000 704 Recovering log #16
-2024/02/22-18:30:40.001 704 Reusing old log C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.15812404\flutter_tools_chrome_device.3bc4f298\Default\shared_proto_db/000016.log 
-2024/02/22-18:30:40.002 704 Delete type=0 #3
-2024/02/22-18:30:40.002 704 Delete type=0 #4
-2024/02/22-18:30:40.002 704 Delete type=0 #7
-2024/02/22-18:30:40.002 704 Delete type=0 #10
-2024/02/22-18:30:40.002 704 Delete type=0 #13
+2024/02/23-11:38:05.997 2dec Reusing MANIFEST C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.6135dd27\flutter_tools_chrome_device.ad191c77\Default\shared_proto_db/MANIFEST-000001
+2024/02/23-11:38:05.998 2dec Recovering log #19
+2024/02/23-11:38:05.999 2dec Reusing old log C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.6135dd27\flutter_tools_chrome_device.ad191c77\Default\shared_proto_db/000019.log 
+2024/02/23-11:38:06.000 2dec Delete type=0 #3
+2024/02/23-11:38:06.000 2dec Delete type=0 #4
+2024/02/23-11:38:06.000 2dec Delete type=0 #7
+2024/02/23-11:38:06.000 2dec Delete type=2 #8
+2024/02/23-11:38:06.000 2dec Delete type=0 #10
+2024/02/23-11:38:06.000 2dec Delete type=2 #11
+2024/02/23-11:38:06.000 2dec Delete type=0 #13
+2024/02/23-11:38:06.000 2dec Delete type=2 #14
+2024/02/23-11:38:06.000 2dec Delete type=0 #16
+2024/02/23-11:38:06.001 2dec Delete type=2 #17
+2024/02/23-11:51:38.248 2dec Level-0 table #24: started
+2024/02/23-11:51:38.257 2dec Level-0 table #24: 282687 bytes OK
+2024/02/23-11:51:38.260 2dec Delete type=0 #19
