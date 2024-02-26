@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class EnergyManagementModel {
@@ -14,7 +12,6 @@ class EnergyManagementModel {
       required this.startDate,
       required this.endDate,
       required this.totalTime,
-      // this.dependency,
       required this.energyConsumed,
       required this.timeInterval});
 
@@ -61,7 +58,7 @@ class EnergyManagementModel {
       DataGridCell<String>(columnName: 'totalTime', value: totalTime),
       DataGridCell<double>(columnName: 'energyConsumed', value: energyConsumed),
       DataGridCell<dynamic>(columnName: 'timeInterval', value: timeInterval),
-       const DataGridCell(columnName: 'Add', value: null),
+      const DataGridCell(columnName: 'Add', value: null),
       const DataGridCell(columnName: 'Delete', value: null)
     ]);
   }

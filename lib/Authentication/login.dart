@@ -89,9 +89,9 @@ class _SignInPageState extends State<SignInPage> {
                               suffixIcon: InkWell(
                                   onTap: _togglePasswordView,
                                   child: _isHidden
-                                      ? const Icon(Icons.visibility)
+                                      ? const Icon(Icons.visibility_off)
                                       : Icon(
-                                          Icons.visibility_off,
+                                          Icons.visibility,
                                           color: grey,
                                         )),
 

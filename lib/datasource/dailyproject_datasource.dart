@@ -1,7 +1,5 @@
 import 'package:assingment/KeysEvents/upload.dart';
-import 'package:assingment/KeysEvents/viewFIle.dart';
 import 'package:assingment/KeysEvents/view_AllFiles.dart';
-import 'package:assingment/Planning_Pages/quality_checklist.dart';
 import 'package:assingment/overview/daily_project.dart';
 import 'package:assingment/provider/summary_provider.dart';
 import 'package:assingment/widget/style.dart';
@@ -51,13 +49,13 @@ class DailyDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
-    DateTime? rangeEndDate = DateTime.now();
-    DateTime? date;
-    DateTime? endDate;
-    DateTime? rangeStartDate1 = DateTime.now();
-    DateTime? rangeEndDate1 = DateTime.now();
-    DateTime? date1;
-    DateTime? endDate1;
+    // DateTime? rangeEndDate = DateTime.now();
+    // DateTime? date;
+    // DateTime? endDate;
+    // DateTime? rangeStartDate1 = DateTime.now();
+    // DateTime? rangeEndDate1 = DateTime.now();
+    // DateTime? date1;
+    // DateTime? endDate1;
     final int dataRowIndex = dataGridRows.indexOf(row);
 
     return DataGridRowAdapter(
@@ -104,7 +102,7 @@ class DailyDataSource extends DataGridSource {
                                   ),
                                 ));
                           },
-                          child: const Text('View')),
+                          child: Text('View', style: tablefonttext)),
                     ),
                     Container(
                       child: isShowPinIcon[dataGridRows.indexOf(row)]
@@ -121,7 +119,7 @@ class DailyDataSource extends DataGridSource {
                               ? '${globalItemLengthList[dataGridRows.indexOf(row)]}+'
                               : '${globalItemLengthList[dataGridRows.indexOf(row)]}'
                           : '',
-                      style: TextStyle(color: blue, fontSize: 11),
+                      style: tablefonttext,
                     )
                   ],
                 )
@@ -148,8 +146,9 @@ class DailyDataSource extends DataGridSource {
                           ),
                         );
                       },
-                      child: const Text(
+                      child: Text(
                         'Upload',
+                        style: tablefonttext,
                       ),
                     )
                   : (dataGridCell.columnName == 'Add')
@@ -165,7 +164,10 @@ class DailyDataSource extends DataGridSource {
                                     progress: '',
                                     status: ''));
                           },
-                          child: const Text('Add'))
+                          child: Text(
+                            'Add',
+                            style: tablefonttext,
+                          ))
                       : (dataGridCell.columnName == 'Delete')
                           ? IconButton(
                               onPressed: () async {
@@ -268,7 +270,7 @@ class DailyDataSource extends DataGridSource {
                           : Text(
                               dataGridCell.value.toString(),
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 11),
+                              style: tablefonttext,
                             ));
     }).toList());
   }
@@ -376,7 +378,7 @@ class DailyDataSource extends DataGridSource {
       alignment: isNumericType ? Alignment.centerRight : Alignment.centerLeft,
       child: TextField(
         autofocus: true,
-        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+        style: tablefonttext,
         controller: editingController..text = displayText,
         textAlign: isNumericType ? TextAlign.right : TextAlign.left,
         autocorrect: false,

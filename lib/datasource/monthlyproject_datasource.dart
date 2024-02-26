@@ -7,6 +7,8 @@ import 'package:month_year_picker/month_year_picker.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+import '../widget/style.dart';
+
 class MonthlyDataSource extends DataGridSource {
   // String cityName;
   // String depoName;
@@ -387,6 +389,7 @@ class MonthlyDataSource extends DataGridSource {
               Text(
             dataGridCell.value.toString(),
             textAlign: TextAlign.center,
+            style: tablefonttext,
           ));
     }).toList());
   }
@@ -507,7 +510,7 @@ class MonthlyDataSource extends DataGridSource {
     return Container(
       alignment: isNumericType ? Alignment.centerRight : Alignment.centerLeft,
       child: TextField(
-        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+        style: tablefonttext,
         autofocus: true,
         controller: editingController..text = displayText,
         textAlign: isNumericType ? TextAlign.right : TextAlign.left,

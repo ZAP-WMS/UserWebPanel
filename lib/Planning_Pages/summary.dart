@@ -3499,6 +3499,8 @@ class _ViewSummaryState extends State<ViewSummary> {
     // Upload the PDF data to Firebase Storage
     firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
         .ref('Downloaded File')
+        .child(widget.userId)
+        .child(widget.depoName!)
         // .child(path)
         .child(pdfPath);
     await ref.putData(Uint8List.fromList(pdfData));

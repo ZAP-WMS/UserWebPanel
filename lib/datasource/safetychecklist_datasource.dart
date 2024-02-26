@@ -1,14 +1,14 @@
 import 'package:assingment/KeysEvents/view_AllFiles.dart';
 import 'package:assingment/model/safety_checklistModel.dart';
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-
 import '../KeysEvents/upload.dart';
-import '../KeysEvents/viewFIle.dart';
+import '../widget/style.dart';
 
 class SafetyChecklistDataSource extends DataGridSource {
   // BuildContext mainContext;
@@ -107,7 +107,7 @@ class SafetyChecklistDataSource extends DataGridSource {
                             ),
                           ));
                         },
-                        child: const Text('Upload'));
+                        child: Text('Upload', style: tablefonttext));
                   },
                 )
               : dataGridCell.columnName == 'ViewPhoto'
@@ -132,7 +132,7 @@ class SafetyChecklistDataSource extends DataGridSource {
                               //     //         '${row.getCells()[1].value.toString()}'),
                               //     ));
                             },
-                            child: const Text('View'));
+                            child: Text('View', style: tablefonttext));
                       },
                     )
                   : dataGridCell.columnName == 'Status'
@@ -171,13 +171,13 @@ class SafetyChecklistDataSource extends DataGridSource {
                               child: Text(
                                 value,
                                 textAlign: TextAlign.center,
+                                style: tablefonttext,
                               ),
                             );
                           }).toList())
                       : Text(
                           dataGridCell.value.toString(),
-                          style: const TextStyle(
-                              fontSize: 11, fontWeight: FontWeight.bold),
+                          style: tablefonttext,
                         ));
     }).toList());
   }
@@ -266,7 +266,7 @@ class SafetyChecklistDataSource extends DataGridSource {
     return Container(
       alignment: isNumericType ? Alignment.centerRight : Alignment.centerLeft,
       child: TextField(
-        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+        style: tablefonttext,
         autofocus: true,
         controller: editingController..text = displayText,
         textAlign: isNumericType ? TextAlign.right : TextAlign.left,

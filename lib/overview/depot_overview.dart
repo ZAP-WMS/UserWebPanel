@@ -111,14 +111,14 @@ class _DepotOverviewState extends State<DepotOverview> {
       _dataGridController = DataGridController();
       verifyProjectManager().whenComplete(() {
         setState(() {
-          if (isProjectManager) {
-            _stream = FirebaseFirestore.instance
-                .collection('OverviewCollectionTable')
-                .doc(widget.depoName)
-                .collection("OverviewTabledData")
-                .doc(projectManagerId)
-                .snapshots();
-          }
+          // if (isProjectManager) {
+          _stream = FirebaseFirestore.instance
+              .collection('OverviewCollectionTable')
+              .doc(widget.depoName)
+              .collection("OverviewTabledData")
+              .doc(projectManagerId)
+              .snapshots();
+          //}
           print('Project manager');
 
           _isloading = false;
@@ -532,7 +532,7 @@ class _DepotOverviewState extends State<DepotOverview> {
                             ),
                             GridColumn(
                               columnName: 'Date',
-                              width: 120,
+                              width: 160,
                               allowEditing: false,
                               label: Container(
                                 alignment: Alignment.center,
@@ -750,7 +750,7 @@ class _DepotOverviewState extends State<DepotOverview> {
   }
 
   cards() {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -806,16 +806,17 @@ class _DepotOverviewState extends State<DepotOverview> {
                     ],
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              margin:
-                                  const EdgeInsets.only(left: 28.0, right: 35),
-                              width: 160,
+                              width: 200,
                               height: 30,
+                              margin: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width *
+                                      0.002),
                               child: Row(
                                 children: [
                                   Expanded(
@@ -828,7 +829,7 @@ class _DepotOverviewState extends State<DepotOverview> {
                                           color: black),
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 5),
                                   ElevatedButton(
                                     onPressed: isEdit == false
                                         ? null
@@ -856,16 +857,19 @@ class _DepotOverviewState extends State<DepotOverview> {
                                       textAlign: TextAlign.end,
                                     ),
                                   ),
-                                  const SizedBox(width: 10)
                                 ],
                               ),
                             ),
+                            SizedBox(width: 2),
                             Row(
                               children: [
                                 Container(
-                                    width: 180,
+                                    width: 200,
                                     height: 30,
-                                    margin: const EdgeInsets.all(10),
+                                    margin: EdgeInsets.only(
+                                        left:
+                                            MediaQuery.of(context).size.width *
+                                                0.003),
                                     decoration: BoxDecoration(
                                       border: Border.all(
                                         color: blue,
@@ -928,9 +932,10 @@ class _DepotOverviewState extends State<DepotOverview> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              margin:
-                                  const EdgeInsets.only(left: 60, right: 35),
-                              width: 160,
+                              margin: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width *
+                                      0.001),
+                              width: 200,
                               height: 35,
                               child: Row(
                                 children: [
@@ -972,14 +977,14 @@ class _DepotOverviewState extends State<DepotOverview> {
                                         'Pick file',
                                         textAlign: TextAlign.end,
                                       )),
-                                  const SizedBox(width: 10),
                                 ],
                               ),
                             ),
+                            SizedBox(width: 4),
                             Container(
-                                width: 180,
+                                width: 200,
                                 height: 30,
-                                margin: const EdgeInsets.all(10),
+                                margin: const EdgeInsets.all(2),
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color: blue,
@@ -1034,9 +1039,10 @@ class _DepotOverviewState extends State<DepotOverview> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              margin:
-                                  const EdgeInsets.only(left: 60, right: 35),
-                              width: 160,
+                              margin: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width *
+                                      0.003),
+                              width: 200,
                               height: 35,
                               child: Row(
                                 children: [
@@ -1050,7 +1056,6 @@ class _DepotOverviewState extends State<DepotOverview> {
                                           color: black),
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
                                   ElevatedButton(
                                       onPressed: isEdit == false
                                           ? null
@@ -1078,14 +1083,13 @@ class _DepotOverviewState extends State<DepotOverview> {
                                         'Pick file',
                                         textAlign: TextAlign.end,
                                       )),
-                                  const SizedBox(width: 10),
                                 ],
                               ),
                             ),
+                            SizedBox(width: 4),
                             Container(
-                                width: 180,
+                                width: 200,
                                 height: 30,
-                                margin: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color: blue,

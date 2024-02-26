@@ -83,7 +83,7 @@ class DepotOverviewDatasource extends DataGridSource {
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: (dataGridCell.columnName == 'Add')
               ? SizedBox(
                   height: 20,
@@ -110,9 +110,9 @@ class DepotOverviewDatasource extends DataGridSource {
                           ),
                         );
                       },
-                      child: const Text(
+                      child: Text(
                         'Add',
-                        style: TextStyle(fontSize: 11),
+                        style: tablefonttext,
                       )),
                 )
               : (dataGridCell.columnName == 'Delete')
@@ -193,7 +193,7 @@ class DepotOverviewDatasource extends DataGridSource {
                             ),
                             Text(
                               dataGridCell.value.toString(),
-                              style: const TextStyle(fontSize: 11),
+                              style: tablefonttext,
                             ),
                           ],
                         )
@@ -274,10 +274,8 @@ class DepotOverviewDatasource extends DataGridSource {
                                     size: 15,
                                   ),
                                 ),
-                                Text(
-                                  dataGridCell.value.toString(),
-                                  style: TextStyle(fontSize: 11),
-                                ),
+                                Text(dataGridCell.value.toString(),
+                                    style: tablefonttext),
                               ],
                             )
                           : dataGridCell.columnName == 'TypeRisk'
@@ -318,7 +316,7 @@ class DepotOverviewDatasource extends DataGridSource {
                                           (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
-                                      child: Text(value),
+                                      child: Text(value, style: tablefonttext),
                                     );
                                   }).toList())
                               : dataGridCell.columnName == 'impactRisk'
@@ -361,7 +359,8 @@ class DepotOverviewDatasource extends DataGridSource {
                                               (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
-                                          child: Text(value),
+                                          child:
+                                              Text(value, style: tablefonttext),
                                         );
                                       }).toList())
                                   : dataGridCell.columnName == 'Status'
@@ -407,12 +406,13 @@ class DepotOverviewDatasource extends DataGridSource {
                                                   (String value) {
                                             return DropdownMenuItem<String>(
                                               value: value,
-                                              child: Text(value),
+                                              child: Text(value,
+                                                  style: tablefonttext),
                                             );
                                           }).toList())
                                       : Text(
                                           dataGridCell.value.toString(),
-                                          style: const TextStyle(fontSize: 11),
+                                          style: tablefonttext,
                                           overflow: TextOverflow.ellipsis,
                                         ));
     }).toList());

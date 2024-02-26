@@ -26,6 +26,8 @@ TextStyle tableheader = const TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 12,
     color: Color.fromARGB(255, 9, 83, 161));
+
+TextStyle tablefonttext = const TextStyle(fontSize: 13);
 Color folderColor = const Color.fromARGB(255, 243, 219, 81);
 TextStyle appFontSize =
     const TextStyle(fontSize: 15, fontWeight: FontWeight.bold);

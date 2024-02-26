@@ -1,5 +1,4 @@
 import 'package:assingment/model/material_vendor.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,7 +94,7 @@ class MaterialDatasource extends DataGridSource {
                           materialSite:
                               DateFormat().add_yMd().format(DateTime.now())));
                 },
-                child: Text('Add'))
+                child: Text('Add', style: tablefonttext))
             : (dataGridCell.columnName == 'Delete')
                 ? IconButton(
                     onPressed: () async {
@@ -116,7 +115,7 @@ class MaterialDatasource extends DataGridSource {
                     icon: Icon(
                       Icons.delete,
                       color: red,
-                      size: 15,
+                      size: 18,
                     ))
                 : (dataGridCell.columnName == 'materialSite')
                     ? Row(
@@ -190,13 +189,11 @@ class MaterialDatasource extends DataGridSource {
                               size: 15,
                             ),
                           ),
-                          Text(dataGridCell.value.toString())
+                          Text(dataGridCell.value.toString(),
+                              style: tablefonttext)
                         ],
                       )
-                    : Text(
-                        dataGridCell.value.toString(),
-                        style: const TextStyle(fontSize: 11),
-                      ),
+                    : Text(dataGridCell.value.toString(), style: tablefonttext),
       );
     }).toList());
   }
@@ -334,7 +331,7 @@ class MaterialDatasource extends DataGridSource {
       // padding: const EdgeInsets.all(8.0),
       alignment: isNumericType ? Alignment.centerRight : Alignment.centerLeft,
       child: TextField(
-        style: const TextStyle(fontSize: 11),
+        style: tablefonttext,
         autofocus: true,
         controller: editingController..text = displayText,
         textAlign: isNumericType ? TextAlign.right : TextAlign.left,

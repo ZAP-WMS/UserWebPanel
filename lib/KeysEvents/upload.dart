@@ -77,7 +77,10 @@ class _UploadDocumentState extends State<UploadDocument> {
                           shrinkWrap: true,
                           itemCount: result?.files.length ?? 0,
                           itemBuilder: (context, index) {
-                            if (result!.files.first.name.contains('.pdf')) {
+                            if (result!.files.first.name.contains('.pdf') ||
+                                result!.files.first.name
+                                    .toLowerCase()
+                                    .contains('.m4')) {
                               return Center(
                                 child: Container(
                                   padding: const EdgeInsets.all(5),

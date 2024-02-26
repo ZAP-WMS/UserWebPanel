@@ -1,10 +1,5 @@
-import 'package:assingment/KeysEvents/viewFIle.dart';
-import 'package:assingment/Planning_Pages/quality_checklist.dart';
 import 'package:assingment/model/detailed_engModel.dart';
-import 'package:assingment/model/employee.dart';
 import 'package:assingment/KeysEvents/upload.dart';
-import 'package:assingment/model/monthly_projectModel.dart';
-import 'package:assingment/overview/daily_project.dart';
 import 'package:assingment/widget/style.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -157,7 +152,10 @@ class DetailedEngSource extends DataGridSource {
                             DateFormat('dd-MM-yyyy').format(DateTime.now()),
                       ));
                 },
-                child: const Text('Add'))
+                child: Text(
+                  'Add',
+                  style: tablefonttext,
+                ))
             : (dataGridCell.columnName == 'Delete')
                 ? IconButton(
                     onPressed: () {
@@ -404,12 +402,8 @@ class DetailedEngSource extends DataGridSource {
                                           size: 20,
                                         ),
                                       ),
-                                      Text(
-                                        dataGridCell.value.toString(),
-                                        style: const TextStyle(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                      Text(dataGridCell.value.toString(),
+                                          style: tablefonttext),
                                     ],
                                   )
                                 : (dataGridCell.columnName ==
@@ -509,12 +503,8 @@ class DetailedEngSource extends DataGridSource {
                                               size: 20,
                                             ),
                                           ),
-                                          Text(
-                                            dataGridCell.value.toString(),
-                                            style: const TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.bold),
-                                          ),
+                                          Text(dataGridCell.value.toString(),
+                                              style: tablefonttext),
                                         ],
                                       )
                                     : (dataGridCell.columnName ==
@@ -589,12 +579,8 @@ class DetailedEngSource extends DataGridSource {
                                                 ),
                                               ),
                                               Text(
-                                                dataGridCell.value.toString(),
-                                                style: const TextStyle(
-                                                    fontSize: 11,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
+                                                  dataGridCell.value.toString(),
+                                                  style: tablefonttext),
                                             ],
                                           )
                                         : (dataGridCell.columnName ==
@@ -667,19 +653,14 @@ class DetailedEngSource extends DataGridSource {
                                                   Text(
                                                     dataGridCell.value
                                                         .toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 11,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                    style: tablefonttext,
                                                   ),
                                                 ],
                                               )
                                             : Text(
                                                 dataGridCell.value.toString(),
                                                 textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                    fontSize: 11),
-                                              ),
+                                                style: tablefonttext),
       );
     }).toList());
   }
@@ -791,7 +772,7 @@ class DetailedEngSource extends DataGridSource {
     return Container(
       alignment: isNumericType ? Alignment.centerRight : Alignment.centerLeft,
       child: TextField(
-        style: const TextStyle(fontSize: 11),
+        style: tablefonttext,
         autofocus: true,
         controller: editingController..text = displayText,
         textAlign: isNumericType ? TextAlign.right : TextAlign.left,

@@ -1,0 +1,17 @@
+2024/02/26-10:52:49.148 2824 Reusing MANIFEST C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.e85e2514\flutter_tools_chrome_device.ff1c0282\Default\IndexedDB\https_user.tatapmis.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/02/26-10:52:49.148 2824 Recovering log #8
+2024/02/26-10:52:49.149 2824 Reusing old log C:\Users\ZAP.01\AppData\Local\Temp\flutter_tools.e85e2514\flutter_tools_chrome_device.ff1c0282\Default\IndexedDB\https_user.tatapmis.com_0.indexeddb.leveldb/000008.log 
+2024/02/26-10:52:49.160 2f18 Level-0 table #14: started
+2024/02/26-10:52:49.163 2f18 Level-0 table #14: 617 bytes OK
+2024/02/26-10:52:49.165 2f18 Delete type=0 #8
+2024/02/26-10:52:49.166 2f18 Manual compaction at level-0 from '\x00\x06\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x07\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/02/26-10:52:50.419 2f18 Level-0 table #16: started
+2024/02/26-10:52:50.421 2f18 Level-0 table #16: 2244 bytes OK
+2024/02/26-10:52:50.424 2f18 Delete type=0 #13
+2024/02/26-10:52:50.424 2a70 Manual compaction at level-0 from '\x00\x07\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x08\x00\x00\x00' @ 0 : 0; will stop at '\x00\x07\x00\x00\x05' @ 260 : 1
+2024/02/26-10:52:50.424 2a70 Compacting 1@0 + 1@1 files
+2024/02/26-10:52:50.427 2a70 Generated table #17@0: 27 keys, 1474 bytes
+2024/02/26-10:52:50.427 2a70 Compacted 1@0 + 1@1 files => 1474 bytes
+2024/02/26-10:52:50.429 2a70 compacted to: files[ 0 1 1 0 0 0 0 ]
+2024/02/26-10:52:50.429 2a70 Delete type=2 #16
+2024/02/26-10:52:50.430 2a70 Manual compaction at level-0 from '\x00\x07\x00\x00\x05' @ 260 : 1 .. '\x00\x08\x00\x00\x00' @ 0 : 0; will stop at (end)

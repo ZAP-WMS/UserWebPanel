@@ -69,6 +69,7 @@ class _ViewAllPdfState extends State<ViewAllPdf> {
 // /DetailedEngRFC/Bengaluru/BMTC KR Puram-29/ ZW3210
   @override
   Widget build(BuildContext context) {
+    setState(() {});
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(50),
