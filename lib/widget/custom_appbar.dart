@@ -157,6 +157,29 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         ],
                       ),
             actions: [
+              widget.haveSend
+                  ? Consumer<CheckboxProvider>(
+                      builder: (context, value, child) {
+                        // print(value.myBooleanValue);
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: lightblue),
+                              onPressed: widget.sendEmail,
+                              // () {
+
+                              // _showCheckboxDialog(context, _checkboxProvider!,
+                              //     widget.depotName!);
+                              // },
+                              child: Text(
+                                'Send Report',
+                                style: TextStyle(color: white),
+                              )),
+                        );
+                      },
+                    )
+                  : Container(),
               widget.isprogress
                   ? FutureBuilder<int>(
                       future: checkPercent(),
@@ -491,24 +514,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     )
                   : Container(),
               const SizedBox(width: 10),
-              widget.haveSend
-                  ? Consumer<CheckboxProvider>(
-                      builder: (context, value, child) {
-                        // print(value.myBooleanValue);
-                        return TextButton(
-                            onPressed: widget.sendEmail,
-                            // () {
-
-                            // _showCheckboxDialog(context, _checkboxProvider!,
-                            //     widget.depotName!);
-                            // },
-                            child: Text(
-                              'Send Email',
-                              style: TextStyle(color: white),
-                            ));
-                      },
-                    )
-                  : Container(),
               Container(
                   margin: const EdgeInsets.all(10.0),
                   child: GestureDetector(
