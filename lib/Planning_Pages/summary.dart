@@ -158,7 +158,11 @@ class _ViewSummaryState extends State<ViewSummary> {
     ];
     widget.id == 'Daily Report'
         ? _summaryProvider!.fetchdailydata(
-            widget.depoName!, widget.userId, startdate!, enddate!)
+            widget.depoName!,
+            widget.userId,
+            startdate!,
+            enddate!,
+          )
         : '';
     widget.id == 'Energy Management'
         ? _summaryProvider!.fetchEnergyData(widget.cityName!, widget.depoName!,
@@ -2709,6 +2713,14 @@ class _ViewSummaryState extends State<ViewSummary> {
 
     // Save the PDF file to device storage
     if (sendReport) {
+      if (kIsWeb) {
+        html.AnchorElement(
+            href:
+                "data:application/octet-stream;base64,${base64Encode(pdfData)}")
+          ..setAttribute("download", pdfPath!)
+          ..click();
+      }
+    } else {
       if (kIsWeb) {
         html.AnchorElement(
             href:

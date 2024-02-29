@@ -79,23 +79,26 @@ class MaterialDatasource extends DataGridSource {
             ? ElevatedButton(
                 onPressed: () {
                   addRowAtIndex(
-                      dataRowIndex + 1,
-                      MaterialProcurementModel(
-                          cityName: '',
-                          details: '',
-                          olaNo: '',
-                          vendorName: '',
-                          oemApproval: '',
-                          oemClearance: '',
-                          croPlacement: '',
-                          croVendor: '',
-                          croNumber: '',
-                          unit: '',
-                          qty: 1,
-                          materialSite:
-                              DateFormat().add_yMd().format(DateTime.now())));
+                    dataRowIndex + 1,
+                    MaterialProcurementModel(
+                      cityName: '',
+                      details: '',
+                      olaNo: '',
+                      vendorName: '',
+                      oemApproval: '',
+                      oemClearance: '',
+                      croPlacement: '',
+                      croVendor: '',
+                      croNumber: '',
+                      unit: '',
+                      qty: 1,
+                      materialSite: DateFormat('MM-dd-yyyy').format(
+                        DateTime.now(),
+                      ),
+                    ),
+                  );
                 },
-                child: Text('Add'))
+                child: const Text('Add'))
             : (dataGridCell.columnName == 'Delete')
                 ? IconButton(
                     onPressed: () async {
@@ -190,7 +193,10 @@ class MaterialDatasource extends DataGridSource {
                               size: 15,
                             ),
                           ),
-                          Text(dataGridCell.value.toString())
+                          Text(
+                            dataGridCell.value.toString(),
+                            style: const TextStyle(fontSize: 11),
+                          )
                         ],
                       )
                     : Text(
@@ -339,9 +345,6 @@ class MaterialDatasource extends DataGridSource {
         controller: editingController..text = displayText,
         textAlign: isNumericType ? TextAlign.right : TextAlign.left,
         autocorrect: false,
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.only(left: 5, right: 5),
-        ),
         inputFormatters: <TextInputFormatter>[
           FilteringTextInputFormatter.allow(regExp),
         ],
@@ -361,7 +364,6 @@ class MaterialDatasource extends DataGridSource {
             }
           } else {
             newCellValue = newCellValue ?? '';
-            print('Hello0');
           }
         },
         onTapOutside: (_) {

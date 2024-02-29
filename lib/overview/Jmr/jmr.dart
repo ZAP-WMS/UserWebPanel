@@ -354,7 +354,7 @@ class _JmrState extends State<Jmr> {
                             MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                       onPressed: () async {
-                        uploadFile(index);
+                        uploadFile(index, tabsForJmr[_selectedIndex]);
                       },
                       child: Text(
                         'Upload',
@@ -363,26 +363,18 @@ class _JmrState extends State<Jmr> {
                   InkWell(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ViewAllPdf(
-                                    cityName: widget.cityName,
-                                    depoName: widget.depoName,
-                                    title: 'jmr',
-                                    userId: userId,
-                                    fldrName:
-                                        'jmrFiles/${widget.cityName}/${widget.depoName}/$userId/${index + 1}',
-                                  )));
-
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => ViewJmrFiles(
-                      //               path:
-                      //                   'jmrFiles/${widget.cityName}/${widget.depoName}/$userId/${index + 1}',
-                      //             )
-                      //             )
-                      //             );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewAllPdf(
+                            cityName: widget.cityName,
+                            depoName: widget.depoName,
+                            title: 'jmr',
+                            userId: userId,
+                            fldrName:
+                                'jmrFiles/${tabsForJmr[_selectedIndex]}/${widget.cityName}/${widget.depoName}/$userId/${index + 1}',
+                          ),
+                        ),
+                      );
                     },
                     child: Container(
                       margin: const EdgeInsets.only(left: 5.0),
@@ -470,7 +462,7 @@ class _JmrState extends State<Jmr> {
     return depoList;
   }
 
-  uploadFile(int index) async {
+  uploadFile(int index, String tabName) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
@@ -480,7 +472,7 @@ class _JmrState extends State<Jmr> {
       await storage
           .ref()
           .child(
-              'jmrFiles/${widget.cityName}/${widget.depoName}/$userId/${index + 1}/$fileName')
+              'jmrFiles/$tabName/${widget.cityName}/${widget.depoName}/$userId/${index + 1}/$fileName')
           .putData(bytes!);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.green,

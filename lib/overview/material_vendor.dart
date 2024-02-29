@@ -615,9 +615,9 @@ class _MaterialProcurementState extends State<MaterialProcurement> {
                 )),
               ]),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
           onPressed: (() {
-            _materialprocurement.add(MaterialProcurementModel(
+            _materialprocurement.add(
+              MaterialProcurementModel(
                 cityName: '',
                 details: '',
                 olaNo: '',
@@ -629,10 +629,15 @@ class _MaterialProcurementState extends State<MaterialProcurement> {
                 croNumber: '',
                 unit: '',
                 qty: 1,
-                materialSite: DateFormat().add_yMd().format(DateTime.now())));
+                materialSite: DateFormat('MM-dd-yyyy').format(
+                  DateTime.now(),
+                ),
+              ),
+            );
             _materialDatasource.buildDataGridRows();
             _materialDatasource.updateDatagridSource();
           }),
+          child: const Icon(Icons.add),
         )
         // floatingActionButton: FloatingActionButton(
         //   onPressed: () {
