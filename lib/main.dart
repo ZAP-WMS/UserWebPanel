@@ -1,5 +1,4 @@
 import 'package:assingment/Splash/splash_screen.dart';
-
 import 'package:assingment/provider/All_Depo_Select_Provider.dart';
 import 'package:assingment/provider/checkbox_provider.dart';
 import 'package:assingment/provider/demandEnergyProvider.dart';
@@ -47,7 +46,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => CheckboxProvider()),
       ],
       child: MaterialApp(
-        // initialRoute: '/splash',
+        initialRoute:
+        // '/o&m_daily_page',
+        '/splash',
         onGenerateRoute: RouteGenerator.generateRoute,
         debugShowCheckedModeBanner: false,
         title: 'TP-EV-PMIS',
@@ -77,7 +78,7 @@ class MyApp extends StatelessWidget {
             // labelStyle: Colors.b
           ),
         ),
-        home: const MyHomePage(),
+        // home: const MyHomePage(),
       ),
     );
   }

@@ -52,6 +52,10 @@ TextStyle bodyText2White = GoogleFonts.ibmPlexSans(
     fontWeight: FontWeight.w400,
     letterSpacing: 0.25,
     color: almostWhite);
+
+TextStyle tableTitleStyle =
+    TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: blue);
+
 TextStyle bodyText2Blue = GoogleFonts.ibmPlexSans(
     fontSize: 14,
     fontWeight: FontWeight.w400,

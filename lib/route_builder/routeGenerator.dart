@@ -7,6 +7,8 @@ import 'package:assingment/screen/demand%20energy%20management/demandScreen.dart
 import 'package:assingment/screen/split_dashboard/split_dashboard.dart';
 import 'package:flutter/material.dart';
 
+import '../screen/o&m view/daily_page/daily.dart';
+
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -25,7 +27,7 @@ class RouteGenerator {
         return CustomPageRoute(page: const CitiesPage());
 
       case '/login':
-        return MaterialPageRoute(builder: (context) => LoginRegister());
+        return MaterialPageRoute(builder: (context) => const LoginRegister());
       // CustomPageRoute(page: const LoginRegister());
 
       case '/splash':
@@ -37,6 +39,12 @@ class RouteGenerator {
             page: SplitDashboard(
           userId: userId,
         ));
+
+      // case '/o&m_daily_page':
+      //   String cityName = settings.arguments.toString();
+      //   String depotName = settings.arguments.toString();
+      //   return CustomPageRoute(
+      //       page: DailyManagementPage(cityName: cityName, depoName: depotName));
     }
     return CustomPageRoute(
         page: SplitDashboard(

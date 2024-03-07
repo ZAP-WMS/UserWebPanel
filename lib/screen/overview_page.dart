@@ -17,6 +17,8 @@ import '../overview/key_events2.dart';
 import '../overview/monthly_project.dart';
 import '../widget/custom_appbar.dart';
 import '../widget/custom_container.dart';
+import 'o&m view/daily_page/daily.dart';
+import 'o&m view/daily_page/daily_home.dart';
 
 class OverviewPage extends StatefulWidget {
   String? cityName;
@@ -108,10 +110,18 @@ class _OverviewPageState extends State<OverviewPage> {
       //   depoName: widget.depoName,
       //   cityName: widget.cityName,
       // ),
-      DailyProject(
+      // DailyManagementPage(
+      //   depoName: widget.depoName,
+      //   cityName: widget.cityName,
+      // ),
+      DailyManagementHomePage(
         depoName: widget.depoName,
         cityName: widget.cityName,
       ),
+      // DailyProject(
+      //   depoName: widget.depoName,
+      //   cityName: widget.cityName,
+      // ),
       MonthlyProject(
         depoName: widget.depoName,
         cityName: widget.cityName,

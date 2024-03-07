@@ -131,7 +131,6 @@ class _EnergyManagementState extends State<EnergyManagement> {
                   monthName,
                   'Date',
                   DateFormat.yMMMMd().format(DateTime.now()));
-
               storeData();
             },
           ),
