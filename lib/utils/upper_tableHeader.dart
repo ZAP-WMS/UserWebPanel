@@ -3,91 +3,14 @@ import 'package:flutter/services.dart';
 import '../widget/style.dart';
 
 TextEditingController dateController = TextEditingController();
-
-// Widget upperHeader(
-//     String tabletitle, TextEditingController Controller, BuildContext context) {
-//   return
-//    Padding(
-//     padding: const EdgeInsets.all(8.0),
-//     child: Container(
-//       padding: const EdgeInsets.symmetric(vertical: 10),
-//       decoration: BoxDecoration(
-//         border: Border.all(color: blue),
-//         borderRadius: BorderRadius.circular(5),
-//       ),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           Image.asset(
-//             'assets/applogo/logo.png',
-//             height: 50,
-//             fit: BoxFit.fitWidth,
-//           ),
-//           Divider(
-//             color: blue,
-//             thickness: 2,
-//           ),
-//           Text(
-//             tabletitle,
-//             style: tableTitleStyle,
-//           ),
-//           Divider(
-//             color: blue,
-//             thickness: 2,
-//           ),
-//           Row(
-//             children: [
-//               Column(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   customText('Date:', '05/07/2000', Controller, context),
-//                   customText('Time:', '01:01:00', Controller, context),
-//                 ],
-//               ),
-//               Column(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   customText('Document Reference Number:', 'doc1234',
-//                       dateController, context),
-//                   customText('Bus Depot Name:', 'BBM', dateController, context)
-//                 ],
-//               ),
-//               Column(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   customText(
-//                       'TPEVCSL/E-BUS/Delhi:', '', dateController, context),
-//                   SizedBox(
-//                     height: MediaQuery.of(context).size.width * 0.03,
-//                   )
-//                 ],
-//               ),
-//             ],
-//           ),
-
-//           // const SizedBox(height: 10),
-//           // Row(
-//           //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           //   children: [
-//           //     customText('Time:', dateController),
-//           //     customText('Bus Depot Name :', dateController),
-//           //     SizedBox(
-//           //       width: MediaQuery.of(context).size.width * 0.31,
-//           //     ),
-//           //   ],
-//           // ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
-
 Widget customText(
     String title,
     String hintText,
     TextEditingController controller,
     TextInputType inputType,
     List<TextInputFormatter> inputformatter,
+    bool isprefixIcon,
+    bool isreadonly,
     BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -107,9 +30,15 @@ Widget customText(
         ),
         child: TextFormField(
           style: formtext,
+          readOnly: isreadonly,
           keyboardType: inputType,
           inputFormatters: inputformatter,
           decoration: InputDecoration(
+              // suffixIcon: isprefixIcon
+              //     ? IconButton(onPressed: () {
+
+              //     }, icon: const Icon(Icons.today))
+              //     : Container(),
               hintText: hintText,
               hintStyle: tablefonttext,
               contentPadding: const EdgeInsets.only(left: 2, right: 2)),
@@ -117,5 +46,28 @@ Widget customText(
         ),
       ),
     ],
+  );
+}
+
+tableFooter(TextEditingController controller) {
+  return Padding(
+    padding: const EdgeInsets.all(10.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Remark if Any',
+          style: tableheader,
+          textAlign: TextAlign.start,
+        ),
+        Container(
+          height: 35,
+          child: TextFormField(
+            controller: controller,
+            maxLines: 1,
+          ),
+        )
+      ],
+    ),
   );
 }

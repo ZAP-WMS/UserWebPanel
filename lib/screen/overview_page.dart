@@ -4,20 +4,18 @@ import 'package:assingment/Planning_Pages/quality_checklist.dart';
 import 'package:assingment/Planning_Pages/safety_checklist.dart';
 import 'package:assingment/components/page_routeBuilder.dart';
 import 'package:assingment/overview/closure_report.dart';
-import 'package:assingment/overview/daily_project.dart';
 import 'package:assingment/overview/detailed_Eng.dart';
 import 'package:assingment/overview/material_vendor.dart';
-import 'package:assingment/widget/style.dart';
+import 'package:assingment/screen/o&m%20view/monthly_page/monthly_home.dart';
 import 'package:flutter/material.dart';
 import '../Authentication/auth_service.dart';
 import '../components/Loading_page.dart';
 import '../overview/depot_overview.dart';
 import '../overview/energy_management.dart';
 import '../overview/key_events2.dart';
-import '../overview/monthly_project.dart';
+
 import '../widget/custom_appbar.dart';
-import '../widget/custom_container.dart';
-import 'o&m view/daily_page/daily.dart';
+
 import 'o&m view/daily_page/daily_home.dart';
 
 class OverviewPage extends StatefulWidget {
@@ -122,10 +120,15 @@ class _OverviewPageState extends State<OverviewPage> {
       //   depoName: widget.depoName,
       //   cityName: widget.cityName,
       // ),
-      MonthlyProject(
+
+      MonthlyManagementHomePage( 
         depoName: widget.depoName,
         cityName: widget.cityName,
       ),
+      // MonthlyProject(
+      //   depoName: widget.depoName,
+      //   cityName: widget.cityName,
+      // ),
       DetailedEng(
         cityName: widget.cityName,
         depoName: widget.depoName,
@@ -206,7 +209,7 @@ class _OverviewPageState extends State<OverviewPage> {
       }),
       child: Center(
         child: Container(
-          margin: EdgeInsets.only(top: 10.0),
+          margin: const EdgeInsets.only(top: 10.0),
           width: MediaQuery.of(context).size.width / 5,
           height: MediaQuery.of(context).size.height / 4,
           child: Card(

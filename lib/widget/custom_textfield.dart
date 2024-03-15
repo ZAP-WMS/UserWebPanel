@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   bool isreadOnly = false;
+  String? hintText;
   CustomTextField(
-      {super.key, required this.controller, required this.isreadOnly});
+      {super.key,
+      required this.controller,
+      required this.isreadOnly,
+      this.hintText});
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -20,6 +24,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         readOnly: widget.isreadOnly,
         controller: widget.controller,
         decoration: InputDecoration(
+            hintText: widget.hintText,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
             border: OutlineInputBorder(
